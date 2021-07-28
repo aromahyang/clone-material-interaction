@@ -1,4 +1,4 @@
-import { $root } from '../utils/constants.js';
+import { createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
 
 function MeaningfulMotion() {
 	const rect = {
@@ -20,25 +20,6 @@ function MeaningfulMotion() {
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
 	let isDragging = false;
-
-	const createCanvas = () => {
-		const $subContainer = document.createElement('div');
-		const $canvas = document.createElement('canvas');
-
-		$subContainer.id = 'sub-container';
-		$subContainer.style = '100%';
-		$subContainer.style.height = '100%';
-		$canvas.style.width = '100%';
-		$canvas.style.height = '100%';
-
-		$subContainer.appendChild($canvas);
-		$root.appendChild($subContainer);
-	};
-
-	const drawCanvas = () => {
-		context.fillStyle = '#904199';
-		context.fillRect(0, 0, innerWidth, innerHeight);
-	};
 
 	const drawRect = () => {
 		const { x, y, width, height } = rect;
@@ -75,7 +56,7 @@ function MeaningfulMotion() {
 		light.x = Math.round(Math.abs(innerWidth - light.width) / 2);
 		light.y = innerHeight;
 
-		drawCanvas();
+		drawCanvas(context, BACKGROUND_COLORS.meaningfulMotion);
 		drawLight();
 		drawRect();
 	};
@@ -103,13 +84,11 @@ function MeaningfulMotion() {
 		if (!isDragging) {
 			return;
 		}
-		// const { x, y, width, height } = rect;
-	
-		// context.clearRect(x, y, width, height);
+
 		rect.x += movementX;
 		rect.y += movementY;
 	
-		drawCanvas();
+		drawCanvas(context, BACKGROUND_COLORS.meaningfulMotion);
 		drawLight();
 		/**
 		 * TODO: 사각형 크기 조절
