@@ -12,3 +12,11 @@ body {
 .c-move {
 	cursor: move;
 }
+
+.c-resize {
+	cursor: nwse-resize;
+}
+
+.c-slide {
+	cursor: ns-resize;
+}
