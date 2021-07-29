@@ -1,4 +1,4 @@
-import { createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
 
 function TangibleSurfaces() {
 	const RADIUS = 48;

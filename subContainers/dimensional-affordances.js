@@ -1,4 +1,4 @@
-import { createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
 
 function DimensionalAffordances() {
 	const MAX_RECT_WIDTH = 240;

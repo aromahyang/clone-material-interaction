@@ -4,8 +4,9 @@ export const BACKGROUND_COLORS = {
 	tangibleSurfaces: '#00a896',
 };
 
+export const $root = document.querySelector('#root');
+
 export function createCanvas() {
-	const $root = document.querySelector('#root');
 	const $subContainer = document.createElement('div');
 	const $canvas = document.createElement('canvas');
 
