@@ -1,3 +1,3 @@
-import DimensionalAffordances from './subContainers/dimensional-affordances.js';
+import UserInitiatedChange from './subContainers/user-initiated-change.js';
 
-new DimensionalAffordances();
+new UserInitiatedChange();

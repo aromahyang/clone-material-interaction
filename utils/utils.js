@@ -2,6 +2,7 @@ export const BACKGROUND_COLORS = {
 	dimensionalAffordances: '#bacbe9',
 	meaningfulMotion: '#904199',
 	tangibleSurfaces: '#00a896',
+	userInitiatedChange: '#204489',
 };
 
 export const $root = document.querySelector('#root');
