@@ -1,3 +1,3 @@
-import MeaningfulMotion from './sub-containers/meaningful-motion.js';
+import DimensionalAffordances from './subContainers/dimensional-affordances.js';
 
-new MeaningfulMotion();
+new DimensionalAffordances();
