@@ -12,20 +12,35 @@ function DimensionalAffordances() {
 		dx: 20,
 		dy: 40,
 	}; // rectangles for middle diamond
+	const direction = { up: false, down: false };
+	const colors = ['#fff', '#1f4288','#ee4a7f'];
 
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
+	let movingRect = {};
+	let isDragging = false;
 
-	const drawDiamond = ({ p1, p2, p3, p4, color }) => {
+	const drawDiamond = ({ p1, p2, p3, p4, color, moving }) => {
 		context.fillStyle = color;
 		context.beginPath();
-		context.moveTo(p1[0], p1[1]);
-		context.lineTo(p2[0], p2[1]);
-		context.lineTo(p3[0], p3[1]);
-		context.lineTo(p4[0], p4[1]);
+		if (!moving) {
+			context.moveTo(p1[0], p1[1]);
+			context.lineTo(p2[0], p2[1]);
+			context.lineTo(p3[0], p3[1]);
+			context.lineTo(p4[0], p4[1]);
+		} else {}
 		context.fill();
+	};
+
+	const isInsideDiamond = (mouseX, mouseY) => {
+		const { x1, y1, x2, y2, width, height } = rectangles;
+		return mouseX >= x1 && mouseX <= x2 + width && mouseY >= y1 - height && mouseY <= y2 + 2 * height;
+	};
+
+	const copyMiddleRect = () => {
+		movingRect = (({ dx, dy, ...others }) => others)(rectangles);
 	};
 
 	const resizeCanvas = () => {
@@ -48,6 +63,8 @@ function DimensionalAffordances() {
 		rectangles.x2 = centerX + rectangles.dx / 2;
 		rectangles.y2 = centerY + rectangles.dy / 2;
 
+		copyMiddleRect();
+		
 		const { x1, y1, x2, y2, width, height } = rectangles;
 		drawCanvas(context, BACKGROUND_COLORS.dimensionalAffordances);
 		drawDiamond({
@@ -55,26 +72,101 @@ function DimensionalAffordances() {
 			p2: [x1 + width, y1 + height],
 			p3: [x2 + width, y2 + height],
 			p4: [x2, y2 + 2 * height],
-			color: '#ee4a7f',
+			color: colors[2],
 		});
 		drawDiamond({
 			p1: [x1, y1 + height],
 			p2: [x1 + width, y1],
 			p3: [x2 + width, y2],
 			p4: [x2, y2 + height],
-			color: '#1f4288',
+			color: colors[1],
 		});
 		drawDiamond({
 			p1: [x1, y1],
 			p2: [x1 + width, y1 - height],
 			p3: [x2 + width, y2 - height],
 			p4: [x2, y2],
-			color: '#fff',
+			color: colors[0],
 		});
 	};
 
-	const handleMouseMove = (event) => {
+	const checkInsideDiamond = (event) => {
 		const { offsetX, offsetY } = event;
+		isDragging = isInsideDiamond(offsetX, offsetY);
+	};
+
+	const handleMouseMove = (event) => {
+		const { offsetX, offsetY, movementY } = event;
+
+		$root.className = isInsideDiamond(offsetX, offsetY) ? 'c-slide' : 'c-normal';
+
+		if (!isDragging) {
+			return;
+		}
+
+		const { y1, y2, height } = rectangles;
+		const nextY1 = movingRect.y1 + movementY;
+		const nextY2 = movingRect.y2 + movementY;
+		if (nextY1 < y1 - height || nextY2 > y2 + height) {
+			return;
+		}
+
+		movingRect.y1 += movementY;
+		movingRect.y2 += movementY;
+		direction.up = movingRect.y2 + movingRect.height <= y2 + height / 2;
+		direction.down = movingRect.y2 + movingRect.height >= y2 + 2 * height - height / 2;
+	};
+
+	const changeColorOrder = () => {
+		const temp = colors[1];
+		colors[1] = colors[2];
+		colors[2] = temp;
+	};
+
+	const stopDrag = () => {
+		isDragging = false;
+		copyMiddleRect();
+
+		if (direction.up || direction.down) {
+			changeColorOrder();
+		}
+	};
+
+	const animation = () => {
+		const { x1, y1, x2, y2, width, height } = rectangles;
+		drawCanvas(context, BACKGROUND_COLORS.dimensionalAffordances);
+		drawDiamond({
+			p1: [x1, y1 + 2 * height],
+			p2: [x1 + width, y1 + height],
+			p3: [x2 + width, y2 + height],
+			p4: [x2, y2 + 2 * height],
+			color: colors[2],
+		});
+		if (!isDragging) {
+			drawDiamond({
+				p1: [x1, y1 + height],
+				p2: [x1 + width, y1],
+				p3: [x2 + width, y2],
+				p4: [x2, y2 + height],
+				color: colors[1],
+			});
+		} else {
+			drawDiamond({
+				p1: [movingRect.x1, movingRect.y1 + movingRect.height],
+				p2: [movingRect.x1 + movingRect.width, movingRect.y1],
+				p3: [movingRect.x2 + movingRect.width, movingRect.y2],
+				p4: [movingRect.x2, movingRect.y2 + movingRect.height],
+				color: colors[1],
+			});
+		}
+		drawDiamond({
+			p1: [x1, y1],
+			p2: [x1 + width, y1 - height],
+			p3: [x2 + width, y2 - height],
+			p4: [x2, y2],
+			color: colors[0],
+		});
+		window.requestAnimationFrame(animation);
 	};
 
 	const init = () => {
@@ -82,14 +174,16 @@ function DimensionalAffordances() {
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
 		resizeCanvas();
+
+		window.requestAnimationFrame(animation);
 	};
 
 	init();
 
 	window.addEventListener('resize', resizeCanvas);
-	window.addEventListener('mousedown', () => {});
+	window.addEventListener('mousedown', checkInsideDiamond);
 	window.addEventListener('mousemove', handleMouseMove);
-	window.addEventListener('mouseup', () => {});
+	window.addEventListener('mouseup', stopDrag);
 }
 
 export default DimensionalAffordances;
