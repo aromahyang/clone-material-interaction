@@ -1,6 +1,7 @@
-import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
 
 function UserInitiatedChange() {
+	const COLOR = COLORS.userInitiatedChange;
 	const circle = { x: 0, y: 0, r: 60 };
 
 	/** @type {HTMLCanvasElement} */
@@ -28,7 +29,7 @@ function UserInitiatedChange() {
 				context.translate(iv, jv);
 				context.rotate(angle);
 				context.beginPath();
-				context.strokeStyle = '#d24b80';
+				context.strokeStyle = COLOR.line;
 				context.lineWidth = 3;
 				context.lineCap = 'round';
 				context.moveTo(-12, 0);
@@ -43,7 +44,7 @@ function UserInitiatedChange() {
 		context.save();
 		const { x, y, r } = circle;
 		context.beginPath();
-		context.fillStyle = 'rgba(255, 255, 255, 0.12)';
+		context.fillStyle = COLOR.circle;
 		context.arc(x, y, r, 0, Math.PI * 2, false);
 		context.fill();
 		context.restore();
@@ -65,7 +66,7 @@ function UserInitiatedChange() {
 			circle.y = innerHeight - 180 - circle.r;
 		}
 
-		drawCanvas(context, BACKGROUND_COLORS.userInitiatedChange);
+		drawCanvas(context, COLOR.background);
 		drawLines();
 		drawCircle();
 	};
@@ -89,7 +90,7 @@ function UserInitiatedChange() {
 	};
 
 	const animation = () => {
-		drawCanvas(context, BACKGROUND_COLORS.userInitiatedChange);
+		drawCanvas(context, COLOR.background);
 		drawLines();
 		drawCircle();
 		window.requestAnimationFrame(animation);

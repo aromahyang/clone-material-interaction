@@ -1,13 +1,13 @@
-import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
 
 function MeaningfulMotion() {
+	const COLOR = COLORS.meaningfulMotion;
 	const rect = {
 		x: 60,
 		y: 60,
 		width: 200,
 		height: 200,
 	};
-
 	const light = {
 		x: 0,
 		y: 0,
@@ -23,7 +23,7 @@ function MeaningfulMotion() {
 
 	const drawRect = () => {
 		const { x, y, width, height } = rect;
-		context.fillStyle = '#FFFFFF';
+		context.fillStyle = COLOR.rectangle;
 		context.fillRect(x, y, width, height);
 	};
 
@@ -56,7 +56,7 @@ function MeaningfulMotion() {
 		light.x = Math.round(Math.abs(innerWidth - light.width) / 2);
 		light.y = innerHeight;
 
-		drawCanvas(context, BACKGROUND_COLORS.meaningfulMotion);
+		drawCanvas(context, COLOR.background.meaningfulMotion);
 		drawLight();
 		drawRect();
 	};
@@ -88,7 +88,7 @@ function MeaningfulMotion() {
 		rect.x += movementX;
 		rect.y += movementY;
 	
-		drawCanvas(context, BACKGROUND_COLORS.meaningfulMotion);
+		drawCanvas(context, COLOR.background.meaningfulMotion);
 		drawLight();
 		/**
 		 * TODO: 사각형 크기 조절

@@ -1,7 +1,9 @@
-import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
 
 function DimensionalAffordances() {
 	const MAX_RECT_WIDTH = 240;
+	const COLOR = COLORS.dimensionalAffordances;
+	const rectColors = [COLOR.rectangle1, COLOR.rectangle2, COLOR.rectangle3];
 	const rectangles = {
 		x1: 0,
 		y1: 0,
@@ -13,7 +15,6 @@ function DimensionalAffordances() {
 		dy: 40,
 	}; // rectangles for middle diamond
 	const direction = { up: false, down: false };
-	const colors = ['#fff', '#1f4288','#ee4a7f'];
 
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
@@ -66,27 +67,27 @@ function DimensionalAffordances() {
 		copyMiddleRect();
 		
 		const { x1, y1, x2, y2, width, height } = rectangles;
-		drawCanvas(context, BACKGROUND_COLORS.dimensionalAffordances);
+		drawCanvas(context, COLOR.background);
 		drawDiamond({
 			p1: [x1, y1 + 2 * height],
 			p2: [x1 + width, y1 + height],
 			p3: [x2 + width, y2 + height],
 			p4: [x2, y2 + 2 * height],
-			color: colors[2],
+			color: rectColors[2],
 		});
 		drawDiamond({
 			p1: [x1, y1 + height],
 			p2: [x1 + width, y1],
 			p3: [x2 + width, y2],
 			p4: [x2, y2 + height],
-			color: colors[1],
+			color: rectColors[1],
 		});
 		drawDiamond({
 			p1: [x1, y1],
 			p2: [x1 + width, y1 - height],
 			p3: [x2 + width, y2 - height],
 			p4: [x2, y2],
-			color: colors[0],
+			color: rectColors[0],
 		});
 	};
 
@@ -118,9 +119,9 @@ function DimensionalAffordances() {
 	};
 
 	const changeColorOrder = () => {
-		const temp = colors[1];
-		colors[1] = colors[2];
-		colors[2] = temp;
+		const temp = rectColors[1];
+		rectColors[1] = rectColors[2];
+		rectColors[2] = temp;
 	};
 
 	const stopDrag = () => {
@@ -134,13 +135,13 @@ function DimensionalAffordances() {
 
 	const animation = () => {
 		const { x1, y1, x2, y2, width, height } = rectangles;
-		drawCanvas(context, BACKGROUND_COLORS.dimensionalAffordances);
+		drawCanvas(context, COLOR.background);
 		drawDiamond({
 			p1: [x1, y1 + 2 * height],
 			p2: [x1 + width, y1 + height],
 			p3: [x2 + width, y2 + height],
 			p4: [x2, y2 + 2 * height],
-			color: colors[2],
+			color: rectColors[2],
 		});
 		if (!isDragging) {
 			drawDiamond({
@@ -148,7 +149,7 @@ function DimensionalAffordances() {
 				p2: [x1 + width, y1],
 				p3: [x2 + width, y2],
 				p4: [x2, y2 + height],
-				color: colors[1],
+				color: rectColors[1],
 			});
 		} else {
 			drawDiamond({
@@ -156,7 +157,7 @@ function DimensionalAffordances() {
 				p2: [movingRect.x1 + movingRect.width, movingRect.y1],
 				p3: [movingRect.x2 + movingRect.width, movingRect.y2],
 				p4: [movingRect.x2, movingRect.y2 + movingRect.height],
-				color: colors[1],
+				color: rectColors[1],
 			});
 		}
 		drawDiamond({

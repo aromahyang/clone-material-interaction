@@ -1,10 +1,29 @@
-export const BACKGROUND_COLORS = {
-	dimensionalAffordances: '#bacbe9',
-	meaningfulMotion: '#904199',
-	tangibleSurfaces: '#00a896',
-	userInitiatedChange: '#204489',
-	emphasizeActions: '#ea1b75',
-};
+export const COLORS = {
+	dimensionalAffordances: {
+		background: '#bacbe9',
+		rectangle1: '#fff',
+		rectangle2: '#1f4288',
+		rectangle3: '#ee4a7f',
+	},
+	meaningfulMotion: {
+		background: '#904199',
+		rectangle: '#fff',
+	},
+	tangibleSurfaces: {
+		background: '#00a896',
+		circle: '#FCB447',
+		rectangle: '#fff',
+	},
+	userInitiatedChange: {
+		background: '#204489',
+		circle: 'rgba(255, 255, 255, 0.12)',
+		line: '#d24b80',
+	},
+	emphasizeActions: {
+		background: '#ea1b75',
+		circle: '#fcb447',
+	}
+}
 
 export const $root = document.querySelector('#root');
 

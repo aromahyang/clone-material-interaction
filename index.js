@@ -1,3 +1,3 @@
-import EmphasizeActions from './subContainers/emphasize-actions.js';
+import App from './indexContainers/index.js';
 
-new EmphasizeActions();
+new App();

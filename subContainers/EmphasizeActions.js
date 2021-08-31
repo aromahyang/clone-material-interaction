@@ -1,6 +1,7 @@
-import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
 
 function EmphasizeActions() {
+	const COLOR = COLORS.emphasizeActions;
 	const circles = [{ x: 0, y: 0, r: 0 }];
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
@@ -10,14 +11,14 @@ function EmphasizeActions() {
 	const drawCircles = () => {
 		circles.forEach((c) => {
 			context.beginPath();
-			context.fillStyle = '#fcb447';
+			context.fillStyle = COLOR.circle;
 			context.arc(c.x, c.y, c.r, Math.PI * 2, false);
 			context.fill();
 		});
 	};
 
 	const animation = () => {
-		drawCanvas(context, BACKGROUND_COLORS.emphasizeActions);
+		drawCanvas(context, COLOR.background.emphasizeActions);
 		drawCircles();
 		window.requestAnimationFrame(animation);
 	};

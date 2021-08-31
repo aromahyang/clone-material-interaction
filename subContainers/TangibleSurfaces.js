@@ -1,8 +1,9 @@
-import { $root, createCanvas, drawCanvas, BACKGROUND_COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
 
 function TangibleSurfaces() {
 	const RADIUS = 48;
 	const MIN_WIDTH = 80;
+	const COLOR = COLORS.tangibleSurfaces;
 
 	const rect = { x: 0, y: 0, width: 480, height: 480 };
 	const circle = { x: 0, y: 0, vx: 16, vy: 8 };
@@ -16,10 +17,10 @@ function TangibleSurfaces() {
 
 	const drawRect = () => {
 		const { x, y, width, height } = rect;
-		context.fillStyle = '#FFF';
+		context.fillStyle = COLOR.rectangle;
 		context.fillRect(x, y, width, height);
 		context.font = 'bold 18px serif';
-		context.fillStyle = '#00a896';
+		context.fillStyle = COLOR.background;
 		context.fillText('\u2921', x + width - 24, y + height - 12);
 	}
 
@@ -93,7 +94,7 @@ function TangibleSurfaces() {
 	const drawCircle = () => {
 		context.beginPath();
 		context.arc(circle.x, circle.y, RADIUS, 0, Math.PI * 2, false);
-		context.fillStyle = '#FCB447';
+		context.fillStyle = COLOR.circle;
 		context.fill();
 	};
 
@@ -168,7 +169,7 @@ function TangibleSurfaces() {
 		rect.x = Math.floor(innerWidth / 2 - rect.width / 2);
 		rect.y = Math.floor(innerHeight / 2 - rect.height / 2);
 
-		drawCanvas(context, BACKGROUND_COLORS.tangibleSurfaces);
+		drawCanvas(context, COLOR.background);
 		drawRect();
 		drawCircle();
 	};
@@ -177,7 +178,7 @@ function TangibleSurfaces() {
 		setCirclePosition();
 
 		context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-		drawCanvas(context, BACKGROUND_COLORS.tangibleSurfaces);
+		drawCanvas(context, COLOR.background);
 		drawRect();
 		drawCircle();
 
