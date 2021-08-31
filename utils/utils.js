@@ -3,6 +3,7 @@ export const BACKGROUND_COLORS = {
 	meaningfulMotion: '#904199',
 	tangibleSurfaces: '#00a896',
 	userInitiatedChange: '#204489',
+	emphasizeActions: '#ea1b75',
 };
 
 export const $root = document.querySelector('#root');

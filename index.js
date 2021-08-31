@@ -1,3 +1,3 @@
-import UserInitiatedChange from './subContainers/user-initiated-change.js';
+import EmphasizeActions from './subContainers/emphasize-actions.js';
 
-new UserInitiatedChange();
+new EmphasizeActions();
