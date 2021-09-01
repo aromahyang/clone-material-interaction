@@ -1,6 +1,6 @@
-import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
 
-function TangibleSurfaces() {
+function TangibleSurfaces({ onClose }) {
 	const RADIUS = 48;
 	const MIN_WIDTH = 80;
 	const COLOR = COLORS.tangibleSurfaces;
@@ -114,7 +114,11 @@ function TangibleSurfaces() {
 	};
 
 	const checkMousePosition = (event) => {
-		const { offsetX, offsetY } = event;
+		const { offsetX, offsetY, path } = event;
+		if (path.some((p) => p.id && p.id === 'close')) {
+			onClose();
+			return;
+		}
 
 		if (isInsideResizeZone(offsetX, offsetY)) {
 			isResizing = true;
@@ -191,6 +195,7 @@ function TangibleSurfaces() {
 		context = canvas.getContext('2d');
 		setCirclePosition(true);
 		resizeCanvas();
+		renderCloseButton(COLOR.cancel);
 
 		window.requestAnimationFrame(animation);
 	};
@@ -201,6 +206,7 @@ function TangibleSurfaces() {
 	window.addEventListener('mousedown', checkMousePosition);
 	window.addEventListener('mousemove', handleMouseMove);
 	window.addEventListener('mouseup', stopDrag);
+	window.removeEventListener('beforeunload', () => console.log('unload'));
 }
 
 export default TangibleSurfaces;
