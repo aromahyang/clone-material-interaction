@@ -1,6 +1,6 @@
-import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
 
-function DimensionalAffordances() {
+function DimensionalAffordances({ onClose }) {
 	const MAX_RECT_WIDTH = 240;
 	const COLOR = COLORS.dimensionalAffordances;
 	const rectColors = [COLOR.rectangle1, COLOR.rectangle2, COLOR.rectangle3];
@@ -31,7 +31,7 @@ function DimensionalAffordances() {
 			context.lineTo(p2[0], p2[1]);
 			context.lineTo(p3[0], p3[1]);
 			context.lineTo(p4[0], p4[1]);
-		} else {}
+		}
 		context.fill();
 	};
 
@@ -91,8 +91,14 @@ function DimensionalAffordances() {
 		});
 	};
 
-	const checkInsideDiamond = (event) => {
-		const { offsetX, offsetY } = event;
+	const checkMousePosition = (event) => {
+		const { offsetX, offsetY, path } = event;
+
+		if (path.some((p) => p.id && p.id === 'close')) {
+			onClose();
+			return;
+		}
+
 		isDragging = isInsideDiamond(offsetX, offsetY);
 	};
 
@@ -165,7 +171,7 @@ function DimensionalAffordances() {
 			p2: [x1 + width, y1 - height],
 			p3: [x2 + width, y2 - height],
 			p4: [x2, y2],
-			color: colors[0],
+			color: rectColors[0],
 		});
 		window.requestAnimationFrame(animation);
 	};
@@ -175,6 +181,7 @@ function DimensionalAffordances() {
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
 		resizeCanvas();
+		renderCloseButton(COLOR.cancel);
 
 		window.requestAnimationFrame(animation);
 	};
@@ -182,7 +189,7 @@ function DimensionalAffordances() {
 	init();
 
 	window.addEventListener('resize', resizeCanvas);
-	window.addEventListener('mousedown', checkInsideDiamond);
+	window.addEventListener('mousedown', checkMousePosition);
 	window.addEventListener('mousemove', handleMouseMove);
 	window.addEventListener('mouseup', stopDrag);
 }

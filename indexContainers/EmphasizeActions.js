@@ -1,14 +1,10 @@
-import { COLORS } from '../utils/utils.js';
+import { COLORS, createIndexBox } from '../utils/utils.js';
 
 function EmphasizeActionsCard({ $target }) {
 	const COLOR = COLORS.emphasizeActions;
 	const { round } = Math;
 
-	const $div = document.createElement('div');
-	$div.id = 'index-2';
-	$div.className = 'index-box';
-
-	$target.appendChild($div);
+	const $div = createIndexBox({ $target, id: 'index-2' });
 
 	const render = ({ innerWidth, innerHeight, radius }) => {
 		const centerX = round(innerWidth / 4);
@@ -24,17 +20,14 @@ function EmphasizeActionsCard({ $target }) {
 
 	this.resize = () => {
 		const { innerHeight, innerWidth } = window;
-		let radius = round(innerWidth / 8);
+		const ratio = innerHeight / innerWidth;
+		const radius = round(innerWidth / 8);
 
 		$div.style.width = `${round(innerWidth / 2)}px`;
 		$div.style.height = `${round(innerHeight / 2)}px`;
-		if (innerWidth >= 636) {
-			$div.style.transform = `translate(${round(innerWidth / 2)}px, 0)`;
-		} else {
-			radius = radius < 70 ? 70 : radius;
-			$div.style.transform = `translate(0, ${round(innerHeight / 2)}px)`;
-		}
-		render({ innerWidth, innerHeight, radius });
+		$div.style.transform = ratio <= 1 ? `translate(${round(innerWidth / 2)}px, 0)` : `translate(0, ${round(innerHeight / 2)}px)`;
+
+		render({ ratio, innerWidth, innerHeight, radius });
 	};
 
 	this.resize();

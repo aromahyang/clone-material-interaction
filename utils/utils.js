@@ -19,13 +19,13 @@ export const COLORS = {
 		background: '#204489',
 		circle: 'rgba(255, 255, 255, 0.12)',
 		line: '#d24b80',
-		cancel: '#1f4388',
+		cancel: '#fcb447',
 	},
 	dimensionalAffordances: {
 		background: '#bacbe9',
 		rectangle1: '#fff',
-		rectangle2: '#1f4288',
-		rectangle3: '#ee4a7f',
+		rectangle2: '#ee4a7f',
+		rectangle3: '#1f4288',
 		cancel: '#904199',
 	},
 }
@@ -55,4 +55,13 @@ export function renderCloseButton(color) {
 		<i style="transform: matrix(1, 0, 0, 1, 0, 0);"></i>
 	</div>
 	`);
+}
+
+export function createIndexBox({ $target, id }) {
+	const $div = document.createElement('div');
+	$div.id = id;
+	$div.className = 'index-box';
+
+	$target.appendChild($div);
+	return $div;
 }

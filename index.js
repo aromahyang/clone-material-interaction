@@ -1,5 +1,16 @@
-import { TangibleSurfacesCard, EmphasizeActionsCard } from './indexContainers/index.js';
-import { TangibleSurfaces } from './subContainers/index.js';
+import {
+	TangibleSurfacesCard,
+	EmphasizeActionsCard,
+	MeaningfulMotionCard,
+	UserInitiatedChangeCard,
+	DimensionalAffordancesCard,
+} from './indexContainers/index.js';
+import {
+	TangibleSurfaces,
+	MeaningfulMotion,
+	UserInitiatedChange,
+	DimensionalAffordances,
+} from './subContainers/index.js';
 import { $root } from './utils/utils.js';
 
 function App() {
@@ -22,8 +33,26 @@ function App() {
 
 			case 2: {
 				// document.querySelector('.index-container').remove();
-				alert('아직 준비 중입니다.');
+				alert('서비스 준비 중입니다.');
 				this.setIndex(0);
+				break;
+			}
+
+			case 3: {
+				document.querySelector('.index-container').remove();
+				new MeaningfulMotion({ onClose: () => this.setIndex(0) });
+				break;
+			}
+
+			case 4: {
+				document.querySelector('.index-container').remove();
+				new UserInitiatedChange({ onClose: () => this.setIndex(0) });
+				break;
+			}
+
+			case 5: {
+				document.querySelector('.index-container').remove();
+				new DimensionalAffordances({ onClose: () => this.setIndex(0) });
 				break;
 			}
 
@@ -51,14 +80,24 @@ function App() {
 				});
 				this.tangibleSurfacesCard = new TangibleSurfacesCard({ $target: $indexContainer });
 				this.emphasizeActionsCard = new EmphasizeActionsCard({ $target: $indexContainer });
+				this.meaningfulMotionCard = new MeaningfulMotionCard({ $target: $indexContainer });
+				this.userInitiatedChangeCard = new UserInitiatedChangeCard({ $target: $indexContainer });
+				this.dimensionalAffordancesCard = new DimensionalAffordancesCard({ $target: $indexContainer });
 			}
 		}
 	};
 
 	this.render();
 	window.addEventListener('resize', () => {
+		if (this.index > 0) {
+			return;
+		}
+
 		this.tangibleSurfacesCard.resize();
 		this.emphasizeActionsCard.resize();
+		this.meaningfulMotionCard.resize();
+		this.userInitiatedChangeCard.resize();
+		this.dimensionalAffordancesCard.resize();
 	});
 }
 

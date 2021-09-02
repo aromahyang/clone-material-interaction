@@ -1,6 +1,6 @@
-import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
 
-function UserInitiatedChange() {
+function UserInitiatedChange({ onClose }) {
 	const COLOR = COLORS.userInitiatedChange;
 	const circle = { x: 0, y: 0, r: 60 };
 
@@ -50,8 +50,13 @@ function UserInitiatedChange() {
 		context.restore();
 	};
 
-	const checkInsideCircle = (event) => {
-		const { offsetX, offsetY } = event;
+	const checkMousePosition = (event) => {
+		const { offsetX, offsetY, path } = event;
+		if (path.some((p) => p.id && p.id === 'close')) {
+			onClose();
+			return;
+		}
+
 		isDragging = isInsideCircle(offsetX, offsetY);
 	};
 
@@ -106,6 +111,7 @@ function UserInitiatedChange() {
 		context = canvas.getContext('2d');
 		circle.x = innerWidth - 180 - circle.r;
 		circle.y = Math.round(innerHeight / 2);
+		renderCloseButton(COLOR.cancel);
 
 		window.requestAnimationFrame(animation);
 	};
@@ -113,7 +119,7 @@ function UserInitiatedChange() {
 	init();
 
 	window.addEventListener('resize', resizeCanvas);
-	window.addEventListener('mousedown', checkInsideCircle);
+	window.addEventListener('mousedown', checkMousePosition);
 	window.addEventListener('mousemove', handleMouseMove);
 	window.addEventListener('mouseup', stopDrag);
 }

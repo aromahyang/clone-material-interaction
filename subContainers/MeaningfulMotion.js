@@ -1,6 +1,6 @@
-import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
 
-function MeaningfulMotion() {
+function MeaningfulMotion({ onClose }) {
 	const COLOR = COLORS.meaningfulMotion;
 	const rect = {
 		x: 60,
@@ -56,7 +56,7 @@ function MeaningfulMotion() {
 		light.x = Math.round(Math.abs(innerWidth - light.width) / 2);
 		light.y = innerHeight;
 
-		drawCanvas(context, COLOR.background.meaningfulMotion);
+		drawCanvas(context, COLOR.background);
 		drawLight();
 		drawRect();
 	};
@@ -67,7 +67,12 @@ function MeaningfulMotion() {
 	};
 
 	const checkInsideRect = (event) => {
-		const { offsetX, offsetY } = event;
+		const { offsetX, offsetY, path } = event;
+
+		if (path.some((p) => p.id && p.id === 'close')) {
+			onClose();
+			return;
+		}
 	
 		isDragging = isInside(offsetX, offsetY);
 	};
@@ -88,7 +93,7 @@ function MeaningfulMotion() {
 		rect.x += movementX;
 		rect.y += movementY;
 	
-		drawCanvas(context, COLOR.background.meaningfulMotion);
+		drawCanvas(context, COLOR.background);
 		drawLight();
 		/**
 		 * TODO: 사각형 크기 조절
@@ -105,6 +110,7 @@ function MeaningfulMotion() {
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
 		resizeCanvas();
+		renderCloseButton(COLOR.cancel);
 	};
 
 	init();

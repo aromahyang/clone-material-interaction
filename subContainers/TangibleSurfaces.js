@@ -1,12 +1,20 @@
 import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
 
 function TangibleSurfaces({ onClose }) {
-	const RADIUS = 48;
-	const MIN_WIDTH = 80;
 	const COLOR = COLORS.tangibleSurfaces;
 
-	const rect = { x: 0, y: 0, width: 480, height: 480 };
+	const rect = {
+		x: 0,
+		y: 0,
+		width: Math.round(Math.min(window.innerWidth, window.innerHeight) / 2),
+		height: Math.round(Math.min(window.innerWidth, window.innerHeight) / 2),
+	};
 	const circle = { x: 0, y: 0, vx: 16, vy: 8 };
+	const RADIUS = Math.round(rect.width / 4) < 20
+		? 20
+		: Math.round(rect.width / 4) > 48
+			? 48
+			: Math.round(rect.width / 4);
 
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
@@ -129,6 +137,7 @@ function TangibleSurfaces({ onClose }) {
 	};
 
 	const resizeRect = (movementX, movementY) => {
+		const MIN_WIDTH = 80;
 		const { width, height } = rect;
 
 		if (width + movementX < MIN_WIDTH || height + movementY < MIN_WIDTH) {
