@@ -17,6 +17,9 @@ function App() {
 	this.index = 0;
 	this.tangibleSurfacesCard = null;
 	this.emphasizeActionsCard = null;
+	this.meaningfulMotionCard = null;
+	this.userInitiatedChangeCard = null;
+	this.dimensionalAffordancesCard = null;
 
 	this.setIndex = (idx) => {
 		this.index = idx;
@@ -92,7 +95,6 @@ function App() {
 		if (this.index > 0) {
 			return;
 		}
-
 		this.tangibleSurfacesCard.resize();
 		this.emphasizeActionsCard.resize();
 		this.meaningfulMotionCard.resize();
