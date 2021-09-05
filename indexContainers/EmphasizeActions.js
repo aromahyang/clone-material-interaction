@@ -12,8 +12,8 @@ function EmphasizeActionsCard({ $target }) {
 		$div.innerHTML = `
 		<div class="index-box-con" style="background-color: ${COLOR.background}; transition-duration: 0.3s; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<div class="action-circle" style="width: ${radius * 2}px; height: ${radius * 2}px; transform: translate(${centerX - radius}px, ${centerY - radius}px);"></div>
-			<div class="action-box" style="width: ${radius}px; height: 8px; transform: translate(${centerX - round(radius / 2)}px, ${centerY - 4}px);"></div>
-			<div class="action-box" style="width: 8px; height: ${radius}px; transform: translate(${centerX - 4}px, ${centerY - round(radius / 2)}px);"></div>
+			<div class="action-box" style="width: ${round(radius * 2 / 3)}px; height: ${round(radius / 10)}px; transform: translate(${centerX - round(radius / 3)}px, ${centerY - round(radius / 20)}px);"></div>
+			<div class="action-box" style="width: ${round(radius / 10)}px; height: ${round(radius * 2 / 3)}px; transform: translate(${centerX - round(radius / 20)}px, ${centerY - round(radius / 3)}px);"></div>
 		</div>
 		`;
 	};
