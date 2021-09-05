@@ -21,7 +21,7 @@ function EmphasizeActionsCard({ $target }) {
 	this.resize = () => {
 		const { innerHeight, innerWidth } = window;
 		const ratio = innerHeight / innerWidth;
-		const radius = round(innerWidth / 8);
+		const radius = round(ratio < 1 ? innerHeight / 6 : innerWidth / 6);
 
 		$div.style.width = `${round(innerWidth / 2)}px`;
 		$div.style.height = `${round(innerHeight / 2)}px`;
