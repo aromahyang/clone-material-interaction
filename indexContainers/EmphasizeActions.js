@@ -1,4 +1,4 @@
-import { COLORS, createIndexBox } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
 
 function EmphasizeActionsCard({ $target }) {
 	const COLOR = COLORS.emphasizeActions;
@@ -15,6 +15,7 @@ function EmphasizeActionsCard({ $target }) {
 			<div class="action-box" style="width: ${round(radius * 2 / 3)}px; height: ${round(radius / 10)}px; transform: translate(${centerX - round(radius / 3)}px, ${centerY - round(radius / 20)}px);"></div>
 			<div class="action-box" style="width: ${round(radius / 10)}px; height: ${round(radius * 2 / 3)}px; transform: translate(${centerX - round(radius / 20)}px, ${centerY - round(radius / 3)}px);"></div>
 		</div>
+		${renderIndexLines()}
 		`;
 	};
 

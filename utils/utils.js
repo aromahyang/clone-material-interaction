@@ -65,3 +65,12 @@ export function createIndexBox({ $target, id }) {
 	$target.appendChild($div);
 	return $div;
 }
+
+export function renderIndexLines() {
+	return `
+	<div id="index-line-0" class="index-line"></div>
+	<div id="index-line-1" class="index-line"></div>
+	<div id="index-line-2" class="index-line"></div>
+	<div id="index-line-3" class="index-line"></div>
+	`;
+}

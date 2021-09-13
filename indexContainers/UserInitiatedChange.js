@@ -1,4 +1,4 @@
-import { COLORS, createIndexBox } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
 
 function UserInitiatedChangeCard({ $target }) {
 	const COLOR = COLORS.userInitiatedChange;
@@ -11,6 +11,7 @@ function UserInitiatedChangeCard({ $target }) {
 		<div class="index-box-con" style="background-color: ${COLOR.background}; transition-duration: 0.3s; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<canvas id="user-initiated-change-card" class="motion-canvas" width="${boxWidth}" height="${boxHeight}"></canvas>
 		</div>
+		${renderIndexLines()}
 		`;
 
 		const $canvas = document.querySelector('#user-initiated-change-card');

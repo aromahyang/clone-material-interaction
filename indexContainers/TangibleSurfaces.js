@@ -1,4 +1,4 @@
-import { COLORS, createIndexBox } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
 
 function TangibleSurfacesCard({ $target }) {
 	const COLOR = COLORS.tangibleSurfaces;
@@ -17,6 +17,7 @@ function TangibleSurfacesCard({ $target }) {
 			<div class="surface-box" style="width: ${length}px; height: ${length}px; transform: translate(${centerX - round(length / 2)}px, ${round(ratio <= 1 ? boxHeight / 3 - length / 2 : boxHeight / 10)}px);"></div>
 			<div class="surface-circle" style="width: ${radius * 2}px; height: ${radius * 2}px; transform: translate(${centerX - radius}px, ${round(ratio <= 1 ? boxHeight * 2 / 3 : boxHeight * 7 / 10)}px);"></div>
 		</div>
+		${renderIndexLines()}
 		`;
 	};
 

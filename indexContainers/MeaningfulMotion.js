@@ -1,4 +1,4 @@
-import { COLORS, createIndexBox } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
 
 function MeaningfulMotionCard({ $target }) {
 	const COLOR = COLORS.meaningfulMotion;
@@ -16,6 +16,7 @@ function MeaningfulMotionCard({ $target }) {
 			<div class="motion-box" style="width: ${length}px; height: ${length}px; transform: translate(${margin}px, ${margin}px);"></div>
 			<canvas id="meaningful-motion-card" class="motion-canvas" width="${boxWidth}" height="${boxHeight}"></canvas>
 		</div>
+		${renderIndexLines()}
 		`;
 
 		const $canvas = document.querySelector('#meaningful-motion-card');
