@@ -79,3 +79,10 @@ export function renderIndexLines() {
 export function removeIndexContainer() {
 	document.querySelector('.index-container').remove();
 }
+
+export function transformIndexLines($div) {
+	const lines = $div.querySelectorAll('.index-line');
+	lines.forEach((line) => {
+		line.style.transform = 'translate(0, 0)';
+	});
+};

@@ -1,10 +1,11 @@
-import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines, transformIndexLines } from '../utils/utils.js';
 
 function DimensionalAffordancesCard({ $target }) {
 	const COLOR = COLORS.dimensionalAffordances;
 	const { round } = Math;
 
 	const $div = createIndexBox({ $target, id: 'index-5', backgroundColor:  COLOR.background });
+	let $indexBoxCon = null;
 
 	const drawDiamond = ({ context, p1, p2, p3, p4, color }) => {
 		context.fillStyle = color;
@@ -18,7 +19,7 @@ function DimensionalAffordancesCard({ $target }) {
 
 	const render = ({ boxWidth, boxHeight }) => {
 		$div.innerHTML = `
-		<div class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
+		<div id="index-box-con-5" class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<canvas id="dimensional-affordances-card" class="motion-canvas" width="${boxWidth}" height="${boxHeight}"></canvas>
 		</div>
 		${renderIndexLines()}
@@ -56,6 +57,12 @@ function DimensionalAffordancesCard({ $target }) {
 		});
 	};
 
+	this.disappear = () => {
+		transformIndexLines($div);
+		$indexBoxCon.style.opacity = 0;
+		$indexBoxCon.style.transform = `translate(0px, 0px) scale(0.9, 0.9)`;
+	};
+
 	this.resize = () => {
 		const { innerHeight, innerWidth } = window;
 		const boxWidth = round(innerWidth / 4);
@@ -68,7 +75,27 @@ function DimensionalAffordancesCard({ $target }) {
 		render({ boxWidth, boxHeight });
 	};
 
-	this.resize();
+	const init = () => {
+		this.resize();
+		$indexBoxCon = document.querySelector('#index-box-con-5');
+		$indexBoxCon.addEventListener('transitionend', (e) => {
+			if (e.propertyName !== 'transform') {
+				return;
+			}
+
+			const canvasWidth = $div.clientWidth - 80;
+			const canvasHeight = $div.clientHeight - 80;
+			const widthRatio = Math.ceil(window.innerWidth / canvasWidth);
+			const heightRatio = Math.ceil(window.innerHeight / canvasHeight);
+			const $indexCanvas = document.querySelector('#index-canvas');
+			$indexCanvas.style.display = 'block';
+			$indexCanvas.style.width = `${$div.clientWidth - 80}px`; // I don't know why `${canvasWidth}px` doesn't evoke transition..
+			$indexCanvas.style.height = `${$div.clientHeight - 80}px`;
+			$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(${widthRatio * 2}, ${heightRatio * 2})`;
+		});
+	};
+
+	init();
 }
 
 export default DimensionalAffordancesCard;

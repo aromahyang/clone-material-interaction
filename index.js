@@ -26,21 +26,24 @@ function App() {
 
 	const getPosition = () => {
 		const { innerWidth, innerHeight } = window;
+		const { round } = Math;
 		const ratio = innerHeight / innerWidth;
 		let x = 0, y = 0;
 		if (this.index === 1) {
 			x = 40;
 			y = 40;
 		} else if (this.index === 2) {
-			x = ratio >= 1 ? Math.round(innerWidth / 2) + 40 : 40;
-			y = ratio >= 1 ? 40 : Math.round(innerHeight / 2) + 40;
+			x = ratio <= 1 ? round(innerWidth / 2) + 40 : 40;
+			y = ratio <= 1 ? 40 : round(innerHeight / 2) + 40;
 		} else if (this.index === 3) {
-			x = Math.round(innerWidth / 2) + 40;
-			y = Math.round(innerHeight / 2) + 40;
+			x = round(innerWidth / 2) + 40;
+			y = round(innerHeight / 2) + 40;
 		} else if (this.index === 4) {
-			//
+			x = ratio <= 1 ? round(innerWidth * 3 / 4) + 40 : round(innerWidth / 2) + 40;
+			y = ratio <= 1 ? round(innerHeight / 2) + 40 : round(innerHeight * 3 / 4) + 40;
 		} else if (this.index === 5) {
-			//
+			x = round(innerWidth * 3 / 4) + 40;
+			y = round(innerHeight * 3 / 4) + 40;
 		}
 		return { x, y };
 	};
@@ -77,12 +80,13 @@ function App() {
 		} else {
 			backgroundColor = '#fff';
 		}
+		console.log('index = ', this.index, 'background=', backgroundColor);
 		$indexCanvas.style.backgroundColor = backgroundColor;
 		$indexCanvas.style.transform = `translate(${x}px, ${y}px)`;
 		$indexCanvas.style.display = 'none';
 		$indexContainer.appendChild($indexCanvas);
 
-		$indexCanvas.addEventListener('transitionend', (e) => {
+		$indexCanvas.addEventListener('transitionend', () => {
 			document.querySelector('.index-container').remove();
 			renderSubcontainer();
 		});
@@ -112,14 +116,12 @@ function App() {
 			}
 
 			case 4: {
-				document.querySelector('.index-container').remove();
-				new UserInitiatedChange({ onClose: () => this.setIndex(0) });
+				this.userInitiatedChangeCard.disappear();
 				break;
 			}
 
 			case 5: {
-				document.querySelector('.index-container').remove();
-				new DimensionalAffordances({ onClose: () => this.setIndex(0) });
+				this.dimensionalAffordancesCard.disappear();
 				break;
 			}
 
@@ -149,7 +151,10 @@ function App() {
 					const indexOfDash = id.indexOf('-');
 					const index = +id.slice(indexOfDash + 1);
 					this.setIndex(index);
-					renderIndexCanvas();
+
+					if (index !== 2) {
+						renderIndexCanvas();
+					}
 				});
 				this.tangibleSurfacesCard = new TangibleSurfacesCard({ $target: $indexContainer });
 				this.emphasizeActionsCard = new EmphasizeActionsCard({ $target: $indexContainer });

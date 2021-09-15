@@ -1,4 +1,4 @@
-import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines, transformIndexLines } from '../utils/utils.js';
 
 function TangibleSurfacesCard({ $target }) {
 	const COLOR = COLORS.tangibleSurfaces;
@@ -6,8 +6,6 @@ function TangibleSurfacesCard({ $target }) {
 
 	const $div = createIndexBox({ $target, id: 'index-1', backgroundColor:  COLOR.background });
 	let $indexBoxCon = null;
-
-	$target.appendChild($div);
 
 	const render = ({ ratio, boxWidth, boxHeight }) => {
 		const centerX = round(boxWidth / 2);
@@ -22,15 +20,8 @@ function TangibleSurfacesCard({ $target }) {
 		`;
 	};
 
-	const transitIndexLines = () => {
-		const lines = $div.querySelectorAll('.index-line');
-		lines.forEach((line) => {
-			line.style.transform = 'translate(0, 0)';
-		});
-	};
-
 	this.disappear = () => {
-		transitIndexLines();
+		transformIndexLines($div);
 		$indexBoxCon.style.opacity = 0;
 		$indexBoxCon.style.transform = `translate(0px, 0px) scale(0.9, 0.9)`;
 	};
@@ -52,11 +43,16 @@ function TangibleSurfacesCard({ $target }) {
 			if (e.propertyName !== 'transform') {
 				return;
 			}
+
+			const canvasWidth = $div.clientWidth - 80;
+			const canvasHeight = $div.clientHeight - 80;
+			const widthRatio = Math.ceil(window.innerWidth / canvasWidth);
+			const heightRatio = Math.ceil(window.innerHeight / canvasHeight);
 			const $indexCanvas = document.querySelector('#index-canvas');
 			$indexCanvas.style.display = 'block';
-			$indexCanvas.style.width = `${$div.clientWidth - 80}px`;
+			$indexCanvas.style.width = `${$div.clientWidth - 80}px`; // I don't know why `${canvasWidth}px` doesn't evoke transition..
 			$indexCanvas.style.height = `${$div.clientHeight - 80}px`;
-			$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(4, 2)`;
+			$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(${widthRatio * 2}, ${heightRatio * 2})`;
 		});
 	};
 

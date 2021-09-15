@@ -1,16 +1,17 @@
-import { COLORS, createIndexBox, renderIndexLines } from '../utils/utils.js';
+import { COLORS, createIndexBox, renderIndexLines, transformIndexLines } from '../utils/utils.js';
 
 function EmphasizeActionsCard({ $target }) {
 	const COLOR = COLORS.emphasizeActions;
 	const { round } = Math;
 
 	const $div = createIndexBox({ $target, id: 'index-2', backgroundColor:  COLOR.background });
+	// let $indexBoxCon = null;
 
 	const render = ({ innerWidth, innerHeight, radius }) => {
 		const centerX = round(innerWidth / 4);
 		const centerY = round(innerHeight / 4);
 		$div.innerHTML = `
-		<div class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
+		<div id="index-box-con-2" class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<div class="action-circle" style="width: ${radius * 2}px; height: ${radius * 2}px; transform: translate(${centerX - radius}px, ${centerY - radius}px);"></div>
 			<div class="action-box" style="width: ${round(radius * 2 / 3)}px; height: ${round(radius / 10)}px; transform: translate(${centerX - round(radius / 3)}px, ${centerY - round(radius / 20)}px);"></div>
 			<div class="action-box" style="width: ${round(radius / 10)}px; height: ${round(radius * 2 / 3)}px; transform: translate(${centerX - round(radius / 20)}px, ${centerY - round(radius / 3)}px);"></div>
@@ -18,6 +19,12 @@ function EmphasizeActionsCard({ $target }) {
 		${renderIndexLines()}
 		`;
 	};
+
+	// this.disappear = () => {
+	// 	transformIndexLines($div);
+	// 	$indexBoxCon.style.opacity = 0;
+	// 	$indexBoxCon.style.transform = `translate(0px, 0px) scale(0.9, 0.9)`;
+	// };
 
 	this.resize = () => {
 		const { innerHeight, innerWidth } = window;
