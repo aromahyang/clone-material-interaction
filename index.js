@@ -80,7 +80,6 @@ function App() {
 		} else {
 			backgroundColor = '#fff';
 		}
-		console.log('index = ', this.index, 'background=', backgroundColor);
 		$indexCanvas.style.backgroundColor = backgroundColor;
 		$indexCanvas.style.transform = `translate(${x}px, ${y}px)`;
 		$indexCanvas.style.display = 'none';

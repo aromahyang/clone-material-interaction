@@ -67,13 +67,13 @@ function MeaningfulMotion({ onClose }) {
 	};
 
 	const checkInsideRect = (event) => {
-		const { offsetX, offsetY, path } = event;
-
+		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
 			onClose();
 			return;
 		}
 	
+		const { offsetX, offsetY } = event;
 		isDragging = isInside(offsetX, offsetY);
 	};
 

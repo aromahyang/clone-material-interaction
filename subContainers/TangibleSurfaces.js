@@ -122,12 +122,13 @@ function TangibleSurfaces({ onClose }) {
 	};
 
 	const checkMousePosition = (event) => {
-		const { offsetX, offsetY, path } = event;
+		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
 			onClose();
 			return;
 		}
 
+		const { offsetX, offsetY } = event;
 		if (isInsideResizeZone(offsetX, offsetY)) {
 			isResizing = true;
 			return;
