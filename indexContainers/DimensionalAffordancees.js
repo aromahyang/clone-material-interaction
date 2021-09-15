@@ -4,7 +4,7 @@ function DimensionalAffordancesCard({ $target }) {
 	const COLOR = COLORS.dimensionalAffordances;
 	const { round } = Math;
 
-	const $div = createIndexBox({ $target, id: 'index-5' });
+	const $div = createIndexBox({ $target, id: 'index-5', backgroundColor:  COLOR.background });
 
 	const drawDiamond = ({ context, p1, p2, p3, p4, color }) => {
 		context.fillStyle = color;
@@ -16,9 +16,9 @@ function DimensionalAffordancesCard({ $target }) {
 		context.fill();
 	};
 
-	const render = ({ ratio, boxWidth, boxHeight }) => {
+	const render = ({ boxWidth, boxHeight }) => {
 		$div.innerHTML = `
-		<div class="index-box-con" style="background-color: ${COLOR.background}; transition-duration: 0.3s; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
+		<div class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<canvas id="dimensional-affordances-card" class="motion-canvas" width="${boxWidth}" height="${boxHeight}"></canvas>
 		</div>
 		${renderIndexLines()}
@@ -58,7 +58,6 @@ function DimensionalAffordancesCard({ $target }) {
 
 	this.resize = () => {
 		const { innerHeight, innerWidth } = window;
-		const ratio = innerHeight / innerWidth;
 		const boxWidth = round(innerWidth / 4);
 		const boxHeight = round(innerHeight / 4);
 
@@ -66,7 +65,7 @@ function DimensionalAffordancesCard({ $target }) {
 		$div.style.height = `${boxHeight}px`;
 		$div.style.transform = `translate(${round(innerWidth * 3 / 4)}px, ${innerHeight * 3 / 4}px)`;
 
-		render({ ratio, boxWidth, boxHeight });
+		render({ boxWidth, boxHeight });
 	};
 
 	this.resize();

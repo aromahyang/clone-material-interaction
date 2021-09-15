@@ -4,15 +4,29 @@ function MeaningfulMotionCard({ $target }) {
 	const COLOR = COLORS.meaningfulMotion;
 	const { round } = Math;
 
-	const $div = createIndexBox({ $target, id: 'index-3' });
+	const $div = createIndexBox({ $target, id: 'index-3', backgroundColor:  COLOR.background });
+	let $indexBoxCon = null;
 
 	$target.appendChild($div);
+
+	const transitIndexLines = () => {
+		const lines = $div.querySelectorAll('.index-line');
+		lines.forEach((line) => {
+			line.style.transform = 'translate(0, 0)';
+		});
+	};
+
+	this.disappear = () => {
+		transitIndexLines();
+		$indexBoxCon.style.opacity = 0;
+		$indexBoxCon.style.transform = `translate(0px, 0px) scale(0.9, 0.9)`;
+	};
 
 	const render = ({ ratio, boxWidth, boxHeight }) => {
 		const length = round(ratio <= 1 ? boxWidth / 3 : boxHeight / 3);
 		const margin = round(ratio <= 1 ? boxWidth / 10 : boxHeight / 10);
 		$div.innerHTML = `
-		<div class="index-box-con" style="background-color: ${COLOR.background}; transition-duration: 0.3s; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
+		<div id="index-box-con-3" class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<div class="motion-box" style="width: ${length}px; height: ${length}px; transform: translate(${margin}px, ${margin}px);"></div>
 			<canvas id="meaningful-motion-card" class="motion-canvas" width="${boxWidth}" height="${boxHeight}"></canvas>
 		</div>
@@ -48,7 +62,22 @@ function MeaningfulMotionCard({ $target }) {
 		render({ ratio, boxWidth, boxHeight });
 	};
 
-	this.resize();
+	const init = () => {
+		this.resize();
+		$indexBoxCon = document.querySelector('#index-box-con-3');
+		$indexBoxCon.addEventListener('transitionend', (e) => {
+			if (e.propertyName !== 'transform') {
+				return;
+			}
+			const $indexCanvas = document.querySelector('#index-canvas');
+			$indexCanvas.style.display = 'block';
+			$indexCanvas.style.width = `${$div.clientWidth - 80}px`;
+			$indexCanvas.style.height = `${$div.clientHeight - 80}px`;
+			$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(8, 4)`;
+		});
+	};
+
+	init();
 }
 
 export default MeaningfulMotionCard;

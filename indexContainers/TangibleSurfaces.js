@@ -4,7 +4,8 @@ function TangibleSurfacesCard({ $target }) {
 	const COLOR = COLORS.tangibleSurfaces;
 	const { round } = Math;
 
-	const $div = createIndexBox({ $target, id: 'index-1' });
+	const $div = createIndexBox({ $target, id: 'index-1', backgroundColor:  COLOR.background });
+	let $indexBoxCon = null;
 
 	$target.appendChild($div);
 
@@ -13,12 +14,25 @@ function TangibleSurfacesCard({ $target }) {
 		const length = round(ratio <= 1 ? boxWidth / 2 : boxHeight / 2);
 		const radius = round(ratio <= 1 ? boxWidth / 12 : boxHeight / 12);
 		$div.innerHTML = `
-		<div class="index-box-con" style="width: 100%; height: 100%; background-color: ${COLOR.background}; transition-duration: 0.3s; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
+		<div id="index-box-con-1" class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<div class="surface-box" style="width: ${length}px; height: ${length}px; transform: translate(${centerX - round(length / 2)}px, ${round(ratio <= 1 ? boxHeight / 3 - length / 2 : boxHeight / 10)}px);"></div>
 			<div class="surface-circle" style="width: ${radius * 2}px; height: ${radius * 2}px; transform: translate(${centerX - radius}px, ${round(ratio <= 1 ? boxHeight * 2 / 3 : boxHeight * 7 / 10)}px);"></div>
 		</div>
 		${renderIndexLines()}
 		`;
+	};
+
+	const transitIndexLines = () => {
+		const lines = $div.querySelectorAll('.index-line');
+		lines.forEach((line) => {
+			line.style.transform = 'translate(0, 0)';
+		});
+	};
+
+	this.disappear = () => {
+		transitIndexLines();
+		$indexBoxCon.style.opacity = 0;
+		$indexBoxCon.style.transform = `translate(0px, 0px) scale(0.9, 0.9)`;
 	};
 
 	this.resize = () => {
@@ -31,7 +45,22 @@ function TangibleSurfacesCard({ $target }) {
 		render({ ratio, boxWidth, boxHeight });
 	};
 
-	this.resize();
+	const init = () => {
+		this.resize();
+		$indexBoxCon = document.querySelector('#index-box-con-1');
+		$indexBoxCon.addEventListener('transitionend', (e) => {
+			if (e.propertyName !== 'transform') {
+				return;
+			}
+			const $indexCanvas = document.querySelector('#index-canvas');
+			$indexCanvas.style.display = 'block';
+			$indexCanvas.style.width = `${$div.clientWidth - 80}px`;
+			$indexCanvas.style.height = `${$div.clientHeight - 80}px`;
+			$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(4, 2)`;
+		});
+	};
+
+	init();
 }
 
 export default TangibleSurfacesCard;

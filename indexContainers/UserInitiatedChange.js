@@ -4,11 +4,11 @@ function UserInitiatedChangeCard({ $target }) {
 	const COLOR = COLORS.userInitiatedChange;
 	const { round } = Math;
 
-	const $div = createIndexBox({ $target, id: 'index-4' });
+	const $div = createIndexBox({ $target, id: 'index-4', backgroundColor:  COLOR.background });
 
 	const render = ({ ratio, boxWidth, boxHeight }) => {
 		$div.innerHTML = `
-		<div class="index-box-con" style="background-color: ${COLOR.background}; transition-duration: 0.3s; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
+		<div class="index-box-con" style="background-color: ${COLOR.background}; opacity: 1; transform: translate(0px, 0px) scale(1, 1);">
 			<canvas id="user-initiated-change-card" class="motion-canvas" width="${boxWidth}" height="${boxHeight}"></canvas>
 		</div>
 		${renderIndexLines()}

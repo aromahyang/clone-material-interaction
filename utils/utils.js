@@ -57,10 +57,11 @@ export function renderCloseButton(color) {
 	`);
 }
 
-export function createIndexBox({ $target, id }) {
+export function createIndexBox({ $target, id, backgroundColor }) {
 	const $div = document.createElement('div');
 	$div.id = id;
 	$div.className = 'index-box';
+	$div.style.backgroundColor = backgroundColor;
 
 	$target.appendChild($div);
 	return $div;
@@ -73,4 +74,8 @@ export function renderIndexLines() {
 	<div id="index-line-2" class="index-line"></div>
 	<div id="index-line-3" class="index-line"></div>
 	`;
+}
+
+export function removeIndexContainer() {
+	document.querySelector('.index-container').remove();
 }
