@@ -7,6 +7,7 @@ Clone Material Interaction의 결과는 [깃헙 페이지](https://aromahyang.gi
 ### TODO
 
 - [ ] Emphasize Actions
-- [ ] 크로스 브라우징
+- [ ] close 버튼 hover 애니메이션
 - [ ] guide 화면
 - [ ] 이벤트 등록 해제
+- [ ] 크로스 브라우징
