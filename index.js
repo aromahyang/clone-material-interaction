@@ -64,6 +64,13 @@ function App() {
 		}
 	};
 
+	const onTransitionEnd = () => {
+		$indexContainer.removeEventListener('click', onClickCard);
+		$indexCanvas.removeEventListener('transitionend', onTransitionEnd);
+		document.querySelector('.index-container').remove();
+		renderSubcontainer();
+	};
+
 	const renderIndexCanvas = () => {
 		const { x, y } = getPosition();
 		$indexCanvas = document.createElement('div');
@@ -87,15 +94,25 @@ function App() {
 		$indexCanvas.style.display = 'none';
 		$indexContainer.appendChild($indexCanvas);
 
-		$indexCanvas.addEventListener('transitionend', () => {
-			document.querySelector('.index-container').remove();
-			renderSubcontainer();
-		});
+		$indexCanvas.addEventListener('transitionend', onTransitionEnd);
 	};
 
 	this.setIndex = (idx) => {
 		this.index = idx;
 		this.render();
+	};
+
+	const onClickCard = (event) => {
+		/**
+		 * Chrome, Opera -> event has path property.
+		 * Safari, Firefox -> event doesn't have.
+		 */
+		const path = event.path ?? event.composedPath();
+		const id = path[0].id;
+		const indexOfDash = id.indexOf('-');
+		const index = +id.slice(indexOfDash + 1);
+		this.setIndex(index);
+		renderIndexCanvas();
 	};
 
 	this.render = () => {
@@ -137,18 +154,7 @@ function App() {
 				$indexContainer.className = 'index-container';
 				$indexContainer.style.cursor = 'pointer';
 				$root.appendChild($indexContainer);
-				$indexContainer.addEventListener('click', (e) => {
-					/**
-					 * Chrome, Opera -> event has path property.
-					 * Safari, Firefox -> event doesn't have.
-					 */
-					const path = e.path ?? e.composedPath();
-					const id = path[0].id;
-					const indexOfDash = id.indexOf('-');
-					const index = +id.slice(indexOfDash + 1);
-					this.setIndex(index);
-					renderIndexCanvas();
-				});
+				$indexContainer.addEventListener('click', onClickCard);
 				this.tangibleSurfacesCard = new TangibleSurfacesCard({ $target: $indexContainer });
 				this.emphasizeActionsCard = new EmphasizeActionsCard({ $target: $indexContainer });
 				this.meaningfulMotionCard = new MeaningfulMotionCard({ $target: $indexContainer });

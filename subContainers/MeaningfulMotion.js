@@ -48,7 +48,7 @@ function MeaningfulMotion({ onClose }) {
 		context.fill();
 	};
 
-	const resizeCanvas = () => {
+	this.resizeCanvas = () => {
 		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
@@ -109,13 +109,13 @@ function MeaningfulMotion({ onClose }) {
 		createCanvas();
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
-		resizeCanvas();
+		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
 	};
 
 	init();
 	
-	window.addEventListener('resize', resizeCanvas);
+	window.addEventListener('resize', this.resizeCanvas);
 	window.addEventListener('mousedown', checkInsideRect);
 	window.addEventListener('mousemove', moveRectAndLight);
 	window.addEventListener('mouseup', stopDrag);

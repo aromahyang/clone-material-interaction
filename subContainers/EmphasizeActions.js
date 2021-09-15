@@ -18,7 +18,7 @@ function EmphasizeActions({ onClose }) {
 	};
 
 	const animation = () => {
-		drawCanvas(context, COLOR.background.emphasizeActions);
+		drawCanvas(context, COLOR.background);
 		drawCircles();
 		window.requestAnimationFrame(animation);
 	};

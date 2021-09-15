@@ -74,24 +74,27 @@ function UserInitiatedChangeCard({ $target }) {
 		render({ ratio, boxWidth, boxHeight });
 	};
 
+	const onTransitionEnd = (event) => {
+		if (event.propertyName !== 'transform') {
+			return;
+		}
+
+		const canvasWidth = $div.clientWidth - 80;
+		const canvasHeight = $div.clientHeight - 80;
+		const widthRatio = Math.ceil(window.innerWidth / canvasWidth);
+		const heightRatio = Math.ceil(window.innerHeight / canvasHeight);
+		const $indexCanvas = document.querySelector('#index-canvas');
+		$indexCanvas.style.display = 'block';
+		$indexCanvas.style.width = `${$div.clientWidth - 80}px`; // I don't know why `${canvasWidth}px` doesn't evoke transition..
+		$indexCanvas.style.height = `${$div.clientHeight - 80}px`;
+		$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(${widthRatio * 2}, ${heightRatio * 2})`;
+		$indexBoxCon.removeEventListener('transitionend', onTransitionEnd);
+	};
+
 	const init = () => {
 		this.resize();
 		$indexBoxCon = document.querySelector('#index-box-con-4');
-		$indexBoxCon.addEventListener('transitionend', (e) => {
-			if (e.propertyName !== 'transform') {
-				return;
-			}
-
-			const canvasWidth = $div.clientWidth - 80;
-			const canvasHeight = $div.clientHeight - 80;
-			const widthRatio = Math.ceil(window.innerWidth / canvasWidth);
-			const heightRatio = Math.ceil(window.innerHeight / canvasHeight);
-			const $indexCanvas = document.querySelector('#index-canvas');
-			$indexCanvas.style.display = 'block';
-			$indexCanvas.style.width = `${$div.clientWidth - 80}px`; // I don't know why `${canvasWidth}px` doesn't evoke transition..
-			$indexCanvas.style.height = `${$div.clientHeight - 80}px`;
-			$indexCanvas.style.transform = `${$indexCanvas.style.transform} scale(${widthRatio * 2}, ${heightRatio * 2})`;
-		});
+		$indexBoxCon.addEventListener('transitionend', onTransitionEnd);
 	};
 
 	init();
