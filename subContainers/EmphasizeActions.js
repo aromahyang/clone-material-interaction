@@ -1,6 +1,6 @@
 import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
 
-function EmphasizeActions() {
+function EmphasizeActions({ onClose }) {
 	const COLOR = COLORS.emphasizeActions;
 	const circles = [{ x: 0, y: 0, r: 0 }];
 	/** @type {HTMLCanvasElement} */

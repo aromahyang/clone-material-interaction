@@ -7,6 +7,7 @@ import {
 } from './indexContainers/index.js';
 import {
 	TangibleSurfaces,
+	EmphasizeActions,
 	MeaningfulMotion,
 	UserInitiatedChange,
 	DimensionalAffordances,
@@ -49,16 +50,17 @@ function App() {
 	};
 
 	const renderSubcontainer = () => {
+		const close = () => this.setIndex(0);
 		if (this.index === 1) {
-			new TangibleSurfaces({ onClose: () => this.setIndex(0) });
+			new TangibleSurfaces({ onClose: close });
 		} else if (this.index === 2) {
-			// TODO
+			new EmphasizeActions({ onClose: close });
 		} else if (this.index === 3) {
-			new MeaningfulMotion({ onClose: () => this.setIndex(0) });
+			new MeaningfulMotion({ onClose: close });
 		} else if (this.index === 4) {
-			new UserInitiatedChange({ onClose: () => this.setIndex(0) });
+			new UserInitiatedChange({ onClose: close });
 		} else if (this.index === 5) {
-			new DimensionalAffordances({ onClose: () => this.setIndex(0) });
+			new DimensionalAffordances({ onClose: close });
 		}
 	};
 
@@ -104,8 +106,7 @@ function App() {
 			}
 
 			case 2: {
-				alert('서비스 준비 중입니다.');
-				this.setIndex(0);
+				this.emphasizeActionsCard.disappear();
 				break;
 			}
 
@@ -131,10 +132,6 @@ function App() {
 					document.querySelector('#close').remove();
 				}
 
-				if (document.querySelector('.index-container')) {
-					// emphasize-actions 완성하면 삭제하기
-					return;
-				}
 				// render index containers
 				$indexContainer = document.createElement('div');
 				$indexContainer.className = 'index-container';
@@ -150,10 +147,7 @@ function App() {
 					const indexOfDash = id.indexOf('-');
 					const index = +id.slice(indexOfDash + 1);
 					this.setIndex(index);
-
-					if (index !== 2) {
-						renderIndexCanvas();
-					}
+					renderIndexCanvas();
 				});
 				this.tangibleSurfacesCard = new TangibleSurfacesCard({ $target: $indexContainer });
 				this.emphasizeActionsCard = new EmphasizeActionsCard({ $target: $indexContainer });
