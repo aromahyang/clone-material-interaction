@@ -70,6 +70,9 @@ function MeaningfulMotion({ onClose }) {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
 			onClose();
+			$root.removeEventListener('mousedown', checkInsideRect);
+			$root.removeEventListener('mousemove', moveRectAndLight);
+			$root.removeEventListener('mouseup', stopDrag);
 			return;
 		}
 	
@@ -115,10 +118,9 @@ function MeaningfulMotion({ onClose }) {
 
 	init();
 	
-	window.addEventListener('resize', this.resizeCanvas);
-	window.addEventListener('mousedown', checkInsideRect);
-	window.addEventListener('mousemove', moveRectAndLight);
-	window.addEventListener('mouseup', stopDrag);
+	$root.addEventListener('mousedown', checkInsideRect);
+	$root.addEventListener('mousemove', moveRectAndLight);
+	$root.addEventListener('mouseup', stopDrag);
 }
 
 export default MeaningfulMotion;

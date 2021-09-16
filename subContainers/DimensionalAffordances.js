@@ -95,6 +95,9 @@ function DimensionalAffordances({ onClose }) {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
 			onClose();
+			$root.removeEventListener('mousedown', checkMousePosition);
+			$root.removeEventListener('mousemove', handleMouseMove);
+			$root.removeEventListener('mouseup', stopDrag);
 			return;
 		}
 
@@ -188,10 +191,10 @@ function DimensionalAffordances({ onClose }) {
 
 	init();
 
-	window.addEventListener('resize', resizeCanvas);
-	window.addEventListener('mousedown', checkMousePosition);
-	window.addEventListener('mousemove', handleMouseMove);
-	window.addEventListener('mouseup', stopDrag);
+	// window.addEventListener('resize', resizeCanvas);
+	$root.addEventListener('mousedown', checkMousePosition);
+	$root.addEventListener('mousemove', handleMouseMove);
+	$root.addEventListener('mouseup', stopDrag);
 }
 
 export default DimensionalAffordances;
