@@ -1,4 +1,4 @@
-import { $root, createCanvas, drawCanvas, COLORS } from '../utils/utils.js';
+import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
 
 function EmphasizeActions({ onClose }) {
 	const COLOR = COLORS.emphasizeActions;
@@ -15,6 +15,17 @@ function EmphasizeActions({ onClose }) {
 			context.arc(c.x, c.y, c.r, Math.PI * 2, false);
 			context.fill();
 		});
+	};
+
+	const checkMousePosition = (event) => {
+		const path = event.path ?? event.composedPath();
+		if (path.some((p) => p.id && p.id === 'close')) {
+			onClose();
+			$root.removeEventListener('mousedown', checkMousePosition);
+			return;
+		}
+	
+		const { offsetX, offsetY } = event;
 	};
 
 	this.resizeCanvas = () => {
@@ -35,17 +46,18 @@ function EmphasizeActions({ onClose }) {
 	};
 
 	const init = () => {
-		const { innerWidth, innerHeight } = window;
-
 		createCanvas();
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
 		this.resizeCanvas();
+		renderCloseButton(COLOR.cancel);
 
 		window.requestAnimationFrame(animation);
 	};
 
 	init();
+
+	$root.addEventListener('mousedown', checkMousePosition);
 }
 
 export default EmphasizeActions;

@@ -8,7 +8,7 @@ export const COLORS = {
 	emphasizeActions: {
 		background: '#ea1b75',
 		circle: '#fcb447',
-		cancel: '#fcb447',
+		cancel: '#1f4388',
 	},
 	meaningfulMotion: {
 		background: '#904199',
