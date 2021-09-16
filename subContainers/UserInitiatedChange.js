@@ -64,7 +64,7 @@ function UserInitiatedChange({ onClose }) {
 		isDragging = isInsideCircle(offsetX, offsetY);
 	};
 
-	const resizeCanvas = () => {
+	this.resizeCanvas = () => {
 		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;

@@ -44,7 +44,7 @@ function DimensionalAffordances({ onClose }) {
 		movingRect = (({ dx, dy, ...others }) => others)(rectangles);
 	};
 
-	const resizeCanvas = () => {
+	this.resizeCanvas = () => {
 		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
@@ -183,7 +183,7 @@ function DimensionalAffordances({ onClose }) {
 		createCanvas();
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
-		resizeCanvas();
+		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
 
 		window.requestAnimationFrame(animation);
@@ -191,7 +191,6 @@ function DimensionalAffordances({ onClose }) {
 
 	init();
 
-	// window.addEventListener('resize', resizeCanvas);
 	$root.addEventListener('mousedown', checkMousePosition);
 	$root.addEventListener('mousemove', handleMouseMove);
 	$root.addEventListener('mouseup', stopDrag);

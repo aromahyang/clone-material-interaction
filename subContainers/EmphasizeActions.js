@@ -17,6 +17,17 @@ function EmphasizeActions({ onClose }) {
 		});
 	};
 
+	this.resizeCanvas = () => {
+		const { innerWidth, innerHeight } = window;
+		canvas.width = innerWidth;
+		canvas.height = innerHeight;
+		circles[0].x = Math.round(innerWidth / 2);
+		circles[0].y = Math.round(innerHeight / 2);
+		circles[0].r = Math.round(1 * Math.min(innerHeight, innerWidth) / 3);
+
+		drawCanvas(context, COLOR.background);
+	};
+
 	const animation = () => {
 		drawCanvas(context, COLOR.background);
 		drawCircles();
@@ -28,13 +39,8 @@ function EmphasizeActions({ onClose }) {
 
 		createCanvas();
 		canvas = document.querySelector('canvas');
-		canvas.width = innerWidth;
-		canvas.height = innerHeight;
 		context = canvas.getContext('2d');
-
-		circles[0].x = Math.round(innerWidth / 2);
-		circles[0].y = Math.round(innerHeight / 2);
-		circles[0].r = Math.round(1 * Math.min(innerHeight, innerWidth) / 3);
+		this.resizeCanvas();
 
 		window.requestAnimationFrame(animation);
 	};

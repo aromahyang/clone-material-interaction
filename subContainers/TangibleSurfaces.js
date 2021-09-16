@@ -179,7 +179,7 @@ function TangibleSurfaces({ onClose }) {
 		isResizing = false;
 	};
 
-	const resizeCanvas = () => {
+	this.resizeCanvas = () => {
 		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
@@ -207,7 +207,7 @@ function TangibleSurfaces({ onClose }) {
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
 		setCirclePosition(true);
-		resizeCanvas();
+		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
 
 		window.requestAnimationFrame(animation);

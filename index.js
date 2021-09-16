@@ -16,11 +16,14 @@ import { $root, COLORS } from './utils/utils.js';
 
 function App() {
 	this.index = 0;
-	this.tangibleSurfacesCard = null;
-	this.emphasizeActionsCard = null;
-	this.meaningfulMotionCard = null;
-	this.userInitiatedChangeCard = null;
-	this.dimensionalAffordancesCard = null;
+	this.indexContainer = {
+		tangibleSurfaces: null,
+		emphasizeActions: null,
+		meaningfulMotion: null,
+		userInitiatedChange: null,
+		dimensionalAffordances: null,
+	};
+	this.subContainer = null;
 
 	let $indexContainer = null;
 	let $indexCanvas = null;
@@ -50,17 +53,20 @@ function App() {
 	};
 
 	const renderSubcontainer = () => {
-		const close = () => this.setIndex(0);
+		const close = () => {
+			this.subContainer = null;
+			this.setIndex(0);
+		};
 		if (this.index === 1) {
-			new TangibleSurfaces({ onClose: close });
+			this.subContainer = new TangibleSurfaces({ onClose: close });
 		} else if (this.index === 2) {
-			new EmphasizeActions({ onClose: close });
+			this.subContainer = new EmphasizeActions({ onClose: close });
 		} else if (this.index === 3) {
-			new MeaningfulMotion({ onClose: close });
+			this.subContainer = new MeaningfulMotion({ onClose: close });
 		} else if (this.index === 4) {
-			new UserInitiatedChange({ onClose: close });
+			this.subContainer = new UserInitiatedChange({ onClose: close });
 		} else if (this.index === 5) {
-			new DimensionalAffordances({ onClose: close });
+			this.subContainer = new DimensionalAffordances({ onClose: close });
 		}
 	};
 
@@ -118,27 +124,27 @@ function App() {
 	this.render = () => {
 		switch (this.index) {
 			case 1: {
-				this.tangibleSurfacesCard.disappear();
+				this.indexContainer.tangibleSurfaces.disappear();
 				break;
 			}
 
 			case 2: {
-				this.emphasizeActionsCard.disappear();
+				this.indexContainer.emphasizeActions.disappear();
 				break;
 			}
 
 			case 3: {
-				this.meaningfulMotionCard.disappear();
+				this.indexContainer.meaningfulMotion.disappear();
 				break;
 			}
 
 			case 4: {
-				this.userInitiatedChangeCard.disappear();
+				this.indexContainer.userInitiatedChange.disappear();
 				break;
 			}
 
 			case 5: {
-				this.dimensionalAffordancesCard.disappear();
+				this.indexContainer.dimensionalAffordances.disappear();
 				break;
 			}
 
@@ -155,11 +161,13 @@ function App() {
 				$indexContainer.style.cursor = 'pointer';
 				$root.appendChild($indexContainer);
 				$indexContainer.addEventListener('click', onClickCard);
-				this.tangibleSurfacesCard = new TangibleSurfacesCard({ $target: $indexContainer });
-				this.emphasizeActionsCard = new EmphasizeActionsCard({ $target: $indexContainer });
-				this.meaningfulMotionCard = new MeaningfulMotionCard({ $target: $indexContainer });
-				this.userInitiatedChangeCard = new UserInitiatedChangeCard({ $target: $indexContainer });
-				this.dimensionalAffordancesCard = new DimensionalAffordancesCard({ $target: $indexContainer });
+				this.indexContainer = {
+					tangibleSurfaces: new TangibleSurfacesCard({ $target: $indexContainer }),
+					emphasizeActions: new EmphasizeActionsCard({ $target: $indexContainer }),
+					meaningfulMotion: new MeaningfulMotionCard({ $target: $indexContainer }),
+					userInitiatedChange: new UserInitiatedChangeCard({ $target: $indexContainer }),
+					dimensionalAffordances: new DimensionalAffordancesCard({ $target: $indexContainer }),
+				};
 			}
 		}
 	};
@@ -167,13 +175,14 @@ function App() {
 	this.render();
 	window.addEventListener('resize', () => {
 		if (this.index > 0) {
+			this.subContainer.resizeCanvas();
 			return;
 		}
-		this.tangibleSurfacesCard.resize();
-		this.emphasizeActionsCard.resize();
-		this.meaningfulMotionCard.resize();
-		this.userInitiatedChangeCard.resize();
-		this.dimensionalAffordancesCard.resize();
+		this.indexContainer.tangibleSurfaces.resize();
+		this.indexContainer.emphasizeActions.resize();
+		this.indexContainer.meaningfulMotion.resize();
+		this.indexContainer.userInitiatedChange.resize();
+		this.indexContainer.dimensionalAffordances.resize();
 	});
 }
 
