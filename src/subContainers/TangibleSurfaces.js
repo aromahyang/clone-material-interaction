@@ -22,6 +22,7 @@ function TangibleSurfaces({ onClose }) {
 	let context = null;
 	let isDragging = false;
 	let isResizing = false;
+	let doesClickCloseButton = false;
 
 	const drawRect = () => {
 		const { x, y, width, height } = rect;
@@ -121,13 +122,10 @@ function TangibleSurfaces({ onClose }) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 	};
 
-	const checkMousePosition = (event) => {
+	const onMouseDownHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
-			onClose();
-			$root.removeEventListener('mousedown', checkMousePosition);
-			$root.removeEventListener('mousemove', handleMouseMove);
-			$root.removeEventListener('mouseup', stopDrag);
+			doesClickCloseButton = true;
 			return;
 		}
 
@@ -160,7 +158,11 @@ function TangibleSurfaces({ onClose }) {
 		drawRect();
 	};
 
-	const handleMouseMove = (event) => {
+	const onMouseMoveHandler = (event) => {
+		if (doesClickCloseButton) {
+			return;
+		}
+
 		const { offsetX, offsetY, movementX, movementY } = event;
 
 		$root.className = isInsideResizeZone(offsetX, offsetY) ? 'c-resize' : isInsideRect(offsetX, offsetY) ? 'c-move' : 'c-normal';
@@ -174,9 +176,19 @@ function TangibleSurfaces({ onClose }) {
 		}
 	};
 
-	const stopDrag = () => {
+	const onMouseUpHandler = () => {
+		const path = event.path ?? event.composedPath();
+		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			onClose();
+			$root.removeEventListener('mousedown', onMouseDownHandler);
+			$root.removeEventListener('mousemove', onMouseMoveHandler);
+			$root.removeEventListener('mouseup', onMouseUpHandler);
+			return;
+		}
+
 		isDragging = false;
 		isResizing = false;
+		doesClickCloseButton = false;
 	};
 
 	this.resizeCanvas = () => {
@@ -215,9 +227,9 @@ function TangibleSurfaces({ onClose }) {
 
 	init();
 
-	$root.addEventListener('mousedown', checkMousePosition);
-	$root.addEventListener('mousemove', handleMouseMove);
-	$root.addEventListener('mouseup', stopDrag);
+	$root.addEventListener('mousedown', onMouseDownHandler);
+	$root.addEventListener('mousemove', onMouseMoveHandler);
+	$root.addEventListener('mouseup', onMouseUpHandler);
 }
 
 export default TangibleSurfaces;

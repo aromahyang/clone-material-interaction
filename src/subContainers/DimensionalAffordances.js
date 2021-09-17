@@ -22,6 +22,7 @@ function DimensionalAffordances({ onClose }) {
 	let context = null;
 	let movingRect = {};
 	let isDragging = false;
+	let doesClickCloseButton = false;
 
 	const drawDiamond = ({ p1, p2, p3, p4, color, moving }) => {
 		context.fillStyle = color;
@@ -91,13 +92,10 @@ function DimensionalAffordances({ onClose }) {
 		});
 	};
 
-	const checkMousePosition = (event) => {
+	const onMouseDownHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
-			onClose();
-			$root.removeEventListener('mousedown', checkMousePosition);
-			$root.removeEventListener('mousemove', handleMouseMove);
-			$root.removeEventListener('mouseup', stopDrag);
+			doesClickCloseButton = true;
 			return;
 		}
 
@@ -105,7 +103,11 @@ function DimensionalAffordances({ onClose }) {
 		isDragging = isInsideDiamond(offsetX, offsetY);
 	};
 
-	const handleMouseMove = (event) => {
+	const onMouseMoveHandler = (event) => {
+		if (doesClickCloseButton) {
+			return;
+		}
+
 		const { offsetX, offsetY, movementY } = event;
 
 		$root.className = isInsideDiamond(offsetX, offsetY) ? 'c-slide' : 'c-normal';
@@ -133,8 +135,18 @@ function DimensionalAffordances({ onClose }) {
 		rectColors[2] = temp;
 	};
 
-	const stopDrag = () => {
+	const onMouseUpHandler = () => {
+		const path = event.path ?? event.composedPath();
+		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			onClose();
+			$root.removeEventListener('mousedown', onMouseDownHandler);
+			$root.removeEventListener('mousemove', onMouseMoveHandler);
+			$root.removeEventListener('mouseup', onMouseUpHandler);
+			return;
+		}
+
 		isDragging = false;
+		doesClickCloseButton = false;
 		copyMiddleRect();
 
 		if (direction.up || direction.down) {
@@ -191,9 +203,9 @@ function DimensionalAffordances({ onClose }) {
 
 	init();
 
-	$root.addEventListener('mousedown', checkMousePosition);
-	$root.addEventListener('mousemove', handleMouseMove);
-	$root.addEventListener('mouseup', stopDrag);
+	$root.addEventListener('mousedown', onMouseDownHandler);
+	$root.addEventListener('mousemove', onMouseMoveHandler);
+	$root.addEventListener('mouseup', onMouseUpHandler);
 }
 
 export default DimensionalAffordances;

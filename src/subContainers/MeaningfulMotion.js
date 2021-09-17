@@ -20,6 +20,7 @@ function MeaningfulMotion({ onClose }) {
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
 	let isDragging = false;
+	let doesClickCloseButton = false;
 
 	const drawRect = () => {
 		const { x, y, width, height } = rect;
@@ -66,13 +67,10 @@ function MeaningfulMotion({ onClose }) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 	};
 
-	const checkInsideRect = (event) => {
+	const onMouseDownHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
-			onClose();
-			$root.removeEventListener('mousedown', checkInsideRect);
-			$root.removeEventListener('mousemove', moveRectAndLight);
-			$root.removeEventListener('mouseup', stopDrag);
+			doesClickCloseButton = true;
 			return;
 		}
 	
@@ -80,7 +78,11 @@ function MeaningfulMotion({ onClose }) {
 		isDragging = isInside(offsetX, offsetY);
 	};
 
-	const moveRectAndLight = (event) => {
+	const onMouseMoveHandler = (event) => {
+		if (doesClickCloseButton) {
+			return;
+		}
+
 		const { movementX, movementY, offsetX, offsetY } = event;
 
 		if (isInside(offsetX, offsetY)) {
@@ -104,8 +106,18 @@ function MeaningfulMotion({ onClose }) {
 		drawRect();
 	};
 
-	const stopDrag = () => {
+	const onMouseUpHandler = (event) => {
+		const path = event.path ?? event.composedPath();
+		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			onClose();
+			$root.removeEventListener('mousedown', onMouseDownHandler);
+			$root.removeEventListener('mousemove', onMouseMoveHandler);
+			$root.removeEventListener('mouseup', onMouseUpHandler);
+			return;
+		}
+
 		isDragging = false;
+		doesClickCloseButton = false;
 	};
 
 	const init = () => {
@@ -118,9 +130,9 @@ function MeaningfulMotion({ onClose }) {
 
 	init();
 	
-	$root.addEventListener('mousedown', checkInsideRect);
-	$root.addEventListener('mousemove', moveRectAndLight);
-	$root.addEventListener('mouseup', stopDrag);
+	$root.addEventListener('mousedown', onMouseDownHandler);
+	$root.addEventListener('mousemove', onMouseMoveHandler);
+	$root.addEventListener('mouseup', onMouseUpHandler);
 }
 
 export default MeaningfulMotion;

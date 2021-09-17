@@ -9,6 +9,7 @@ function UserInitiatedChange({ onClose }) {
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
 	let isDragging = false;
+	let doesClickCloseButton = false;
 
 	const isInsideCircle = (mouseX, mouseY) => {
 		const { x, y, r } = circle;
@@ -50,13 +51,10 @@ function UserInitiatedChange({ onClose }) {
 		context.restore();
 	};
 
-	const checkMousePosition = (event) => {
+	const onMouseDownHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
-			onClose();
-			$root.removeEventListener('mousedown', checkMousePosition);
-			$root.removeEventListener('mousemove', handleMouseMove);
-			$root.removeEventListener('mouseup', stopDrag);
+			doesClickCloseButton = true;
 			return;
 		}
 
@@ -80,7 +78,11 @@ function UserInitiatedChange({ onClose }) {
 		drawCircle();
 	};
 
-	const handleMouseMove = (event) => {
+	const onMouseMoveHandler = (event) => {
+		if (doesClickCloseButton) {
+			return;
+		}
+
 		const { offsetX, offsetY, movementX, movementY } = event;
 		
 		$root.className = isInsideCircle(offsetX, offsetY) ? 'c-move' : 'c-normal';
@@ -94,8 +96,18 @@ function UserInitiatedChange({ onClose }) {
 		drawCircle();
 	};
 
-	const stopDrag = () => {
+	const onMouseUpHandler = (event) => {
+		const path = event.path ?? event.composedPath();
+		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			onClose();
+			$root.removeEventListener('mousedown', onMouseDownHandler);
+			$root.removeEventListener('mousemove', onMouseMoveHandler);
+			$root.removeEventListener('mouseup', onMouseUpHandler);
+			return;
+		}
+
 		isDragging = false;
+		doesClickCloseButton = false;
 	};
 
 	const animation = () => {
@@ -122,9 +134,9 @@ function UserInitiatedChange({ onClose }) {
 
 	init();
 
-	$root.addEventListener('mousedown', checkMousePosition);
-	$root.addEventListener('mousemove', handleMouseMove);
-	$root.addEventListener('mouseup', stopDrag);
+	$root.addEventListener('mousedown', onMouseDownHandler);
+	$root.addEventListener('mousemove', onMouseMoveHandler);
+	$root.addEventListener('mouseup', onMouseUpHandler);
 }
 
 export default UserInitiatedChange;
