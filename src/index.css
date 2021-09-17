@@ -45,6 +45,8 @@ body {
 	height: 100%;
 	overflow: hidden;
 	pointer-events: none;
+	-webkit-transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .surface-box {
@@ -101,6 +103,8 @@ body {
 	background: #333;
 	z-index: 10;
 	pointer-events: none;
+	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #index-line-0 {
@@ -108,8 +112,6 @@ body {
 	height: 40px;
 	top: 0;
 	left: 0;
-	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	transform: translate(0, -40px);
 }
 
@@ -118,8 +120,6 @@ body {
 	height: 100%;
 	top: 0;
 	right: 0;
-	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	transform: translate(40px, 0);
 }
 
@@ -128,8 +128,6 @@ body {
 	height: 40px;
 	bottom: 0;
 	left: 0;
-	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	transform: translate(0, 40px);
 }
 
@@ -138,8 +136,6 @@ body {
 	height: 100%;
 	bottom: 0;
 	left: 0;
-	-webkit-transition: -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	transform: translate(-40px, 0);
 }
 
@@ -157,6 +153,15 @@ body {
 
 .index-box:hover > #index-line-3 {
 	transform: translate(-20px, 0);
+}
+
+#index-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 20;
+	-webkit-transition: -webkit-transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)
 }
 
 #close {
