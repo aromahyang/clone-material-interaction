@@ -8,20 +8,36 @@ function EmphasizeActions({ onClose }) {
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
 
+	const drawPlus = (circleX, circleY, radius) => {
+		const size = {
+			original: Math.round(2 * radius / 3),
+			half: Math.round(radius / 3),
+		};
+		const thickness = Math.round(radius / 10) < 8 ? 8 : Math.round(radius / 10);
+		const halfThickness = Math.round(thickness / 2);
+
+		context.fillStyle = '#fff';
+		context.fillRect(circleX - size.half, circleY - halfThickness, size.original, thickness);
+		context.fillRect(circleX - halfThickness, circleY - size.half, thickness, size.original);
+	};
+
 	const drawCircles = () => {
 		circles.forEach((c) => {
 			context.beginPath();
 			context.fillStyle = COLOR.circle;
 			context.arc(c.x, c.y, c.r, Math.PI * 2, false);
 			context.fill();
+			drawPlus(c.x, c.y, c.r);
 		});
 	};
 
-	const checkMousePosition = (event) => {
+	const divideCircle = () => {};
+
+	const onClickHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
 			onClose();
-			$root.removeEventListener('mousedown', checkMousePosition);
+			$root.removeEventListener('click', onClickHandler);
 			return;
 		}
 	
@@ -57,7 +73,7 @@ function EmphasizeActions({ onClose }) {
 
 	init();
 
-	$root.addEventListener('mousedown', checkMousePosition);
+	$root.addEventListener('click', onClickHandler);
 }
 
 export default EmphasizeActions;
