@@ -8,21 +8,40 @@ import {
 	COLORS,
 } from '../utils/utils.js';
 
+function Ball(x, y, r, vx, vy) {
+	this.x = x;
+	this.y = y;
+	this.r = r;
+	this.vx = vx;
+	this.vy = vy;
+
+	this.draw = (context) => {
+		context.beginPath();
+		context.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+		context.fillStyle = COLORS.tangibleSurfaces.circle;
+		context.fill();
+	};
+}
+
+function Rectangle(x, y, w, h) {
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+
+	this.draw = (context) => {
+		context.fillStyle = COLORS.tangibleSurfaces.rectangle;
+		context.fillRect(this.x, this.y, this.w, this.h);
+		context.font = 'bold 18px serif';
+		context.fillStyle = COLORS.tangibleSurfaces.background;
+		context.fillText('\u2921', this.x + this.w - 24, this.y + this.h - 12);
+	};
+}
+
 function TangibleSurfaces({ onClose }) {
 	const COLOR = COLORS.tangibleSurfaces;
-
-	const rect = {
-		x: 0,
-		y: 0,
-		width: Math.round(Math.min(window.innerWidth, window.innerHeight) / 2),
-		height: Math.round(Math.min(window.innerWidth, window.innerHeight) / 2),
-	};
-	const circle = { x: 0, y: 0, vx: 16, vy: 8 };
-	const RADIUS = Math.round(rect.width / 4) < 20
-		? 20
-		: Math.round(rect.width / 4) > 48
-			? 48
-			: Math.round(rect.width / 4);
+	const rect = new Rectangle(0, 0, 1, 1);
+	const ball = new Ball(0, 0, 1, 16, 8);
 
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
@@ -33,15 +52,6 @@ function TangibleSurfaces({ onClose }) {
 	let isResizing = false;
 	let doesClickCloseButton = false;
 
-	const drawRect = () => {
-		const { x, y, width, height } = rect;
-		context.fillStyle = COLOR.rectangle;
-		context.fillRect(x, y, width, height);
-		context.font = 'bold 18px serif';
-		context.fillStyle = COLOR.background;
-		context.fillText('\u2921', x + width - 24, y + height - 12);
-	}
-
 	const setCirclePosition = (isInitial) => {
 		const { innerHeight, innerWidth } = window;
 
@@ -49,86 +59,79 @@ function TangibleSurfaces({ onClose }) {
 			const centerX = Math.round(innerWidth / 2);
 			const centerY = Math.round(innerHeight / 2);
 			const circlePositions = [
-				[centerX, RADIUS],
-				[centerX, innerHeight - RADIUS],
-				[RADIUS, centerY],
-				[innerWidth - RADIUS, centerY]
+				[centerX, ball.r],
+				[centerX, innerHeight - ball.r],
+				[ball.r, centerY],
+				[innerWidth - ball.r, centerY]
 			];
 			const index = Math.floor(Math.random() * 4);
 
-			circle.x = circlePositions[index][0];
-			circle.y = circlePositions[index][1];
+			ball.x = circlePositions[index][0];
+			ball.y = circlePositions[index][1];
 
-			if (circle.x > innerWidth / 2) {
-				circle.vx *= -1;
+			if (ball.x > innerWidth / 2) {
+				ball.vx *= -1;
 			}
 
-			if (circle.y > innerHeight / 2) {
-				circle.vy *= -1;
+			if (ball.y > innerHeight / 2) {
+				ball.vy *= -1;
 			}
 
 			return;
 		}
 
-		const nextX = circle.x + circle.vx;
-		const nextY = circle.y + circle.vy;
+		const nextX = ball.x + ball.vx;
+		const nextY = ball.y + ball.vy;
 
-		const doesTouchVerticalWindow = nextX - RADIUS <= 0 || nextX + RADIUS >= innerWidth;
-		const doesTouchHorizontalWindow = nextY - RADIUS <= 0 || nextY + RADIUS >= innerHeight;
+		const doesTouchVerticalWindow = nextX - ball.r <= 0 || nextX + ball.r >= innerWidth;
+		const doesTouchHorizontalWindow = nextY - ball.r <= 0 || nextY + ball.r >= innerHeight;
 
 		if (doesTouchVerticalWindow) {
-			circle.vx *= -1;
+			ball.vx *= -1;
 		}
 
 		if (doesTouchHorizontalWindow) {
-			circle.vy *= -1;
+			ball.vy *= -1;
 		}
 
-		const doesTouchRect = nextX + RADIUS >= rect.x &&
-			nextX - RADIUS <= rect.x + rect.width &&
-			nextY + RADIUS >= rect.y &&
-			nextY - RADIUS <= rect.y + rect.height;
+		const doesTouchRect = nextX + ball.r >= rect.x &&
+			nextX - ball.r <= rect.x + rect.w &&
+			nextY + ball.r >= rect.y &&
+			nextY - ball.r <= rect.y + rect.h;
 
 		if (doesTouchRect) {
-			const x1 = Math.abs(rect.x - (circle.x + RADIUS));
-			const x2 = Math.abs(rect.x + rect.width - (circle.x - RADIUS));
-			const y1 = Math.abs(rect.y - (nextY + RADIUS));
-			const y2 = Math.abs(rect.y + rect.height - (nextY - RADIUS));
+			const x1 = Math.abs(rect.x - (ball.x + ball.r));
+			const x2 = Math.abs(rect.x + rect.w - (ball.x - ball.r));
+			const y1 = Math.abs(rect.y - (nextY + ball.r));
+			const y2 = Math.abs(rect.y + rect.h - (nextY - ball.r));
 			const min1 = Math.min(x1, x2);
 			const min2 = Math.min(y1, y2);
 			const min = Math.min(min1, min2);
 
 			if (min === min1) {
-				circle.vx *= -1;
+				ball.vx *= -1;
 			} else if (min === min2) {
-				circle.vy *= -1;
+				ball.vy *= -1;
 			}
 		}
 
-		circle.x += circle.vx;
-		circle.y += circle.vy;
-	};
-
-	const drawCircle = () => {
-		context.beginPath();
-		context.arc(circle.x, circle.y, RADIUS, 0, Math.PI * 2, false);
-		context.fillStyle = COLOR.circle;
-		context.fill();
+		ball.x += ball.vx;
+		ball.y += ball.vy;
 	};
 
 	const isInsideResizeZone = (mouseX, mouseY) => {
-		const { x, y, width, height } = rect;
+		const { x, y, w, h } = rect;
 
-		const bottomRightX = x + width;
-		const bottomRightY = y + height;
+		const bottomRightX = x + w;
+		const bottomRightY = y + h;
 		const range = 40;
 
 		return mouseX >= bottomRightX - range && mouseX <= bottomRightX && mouseY >= bottomRightY - range && mouseY <= bottomRightY;
 	};
 
 	const isInsideRect = (mouseX, mouseY) => {
-		const { x, y, width, height } = rect;
-		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+		const { x, y, w, h } = rect;
+		return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
 	};
 
 	const onMouseDownHandler = (event) => {
@@ -149,22 +152,22 @@ function TangibleSurfaces({ onClose }) {
 
 	const resizeRect = (movementX, movementY) => {
 		const MIN_WIDTH = 80;
-		const { width, height } = rect;
+		const { w, h } = rect;
 
-		if (width + movementX < MIN_WIDTH || height + movementY < MIN_WIDTH) {
+		if (w + movementX < MIN_WIDTH || h + movementY < MIN_WIDTH) {
 			return;
 		}
 
-		rect.width = width + movementX;
-		rect.height = height + movementY;
+		rect.w = w + movementX;
+		rect.h = h + movementY;
 
-		drawRect();
+		rect.draw(context);
 	};
 
 	const moveRect = (movementX, movementY) => {
 		rect.x += movementX;
 		rect.y += movementY;
-		drawRect();
+		rect.draw(context);
 	};
 
 	const onMouseMoveHandler = (event) => {
@@ -205,12 +208,12 @@ function TangibleSurfaces({ onClose }) {
 		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
-		rect.x = Math.floor(innerWidth / 2 - rect.width / 2);
-		rect.y = Math.floor(innerHeight / 2 - rect.height / 2);
+		rect.x = Math.floor(innerWidth / 2 - rect.w / 2);
+		rect.y = Math.floor(innerHeight / 2 - rect.h / 2);
 
 		drawCanvas(context, COLOR.background);
-		drawRect();
-		drawCircle();
+		rect.draw(context);
+		ball.draw(context);
 	};
 
 	const animation = () => {
@@ -218,8 +221,8 @@ function TangibleSurfaces({ onClose }) {
 
 		context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 		drawCanvas(context, COLOR.background);
-		drawRect();
-		drawCircle();
+		rect.draw(context);
+		ball.draw(context);
 
 		window.requestAnimationFrame(animation);
 	};
@@ -228,6 +231,16 @@ function TangibleSurfaces({ onClose }) {
 		createCanvas();
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
+
+		const length = Math.round(Math.min(window.innerWidth, window.innerHeight) / 2);
+		rect.w = length;
+		rect.h = length;
+		const RADIUS = Math.round(length / 4) < 20
+						? 20
+						: Math.round(length / 4) > 48
+							? 48
+							: Math.round(length / 4);
+		ball.r = RADIUS;
 		setCirclePosition(true);
 		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
