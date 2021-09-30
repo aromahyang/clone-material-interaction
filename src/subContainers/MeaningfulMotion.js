@@ -8,20 +8,50 @@ import {
 	COLORS,
 } from '../utils/utils.js';
 
+function Rectangle(x, y, w, h) {
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+
+	this.draw = (context) => {
+		context.fillStyle = COLORS.meaningfulMotion.rectangle;
+		context.fillRect(this.x, this.y, this.w, this.h);
+	};
+}
+
+function Light(x, y, w, h) {
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+
+	this.draw = (context, rect) => {
+		const gradient = context.createLinearGradient(rect.x, 0, this.x + this.w, this.y + this.h);
+		gradient.addColorStop(0, 'rgba(229, 88, 95, 1)');
+		gradient.addColorStop(1, 'rgba(229, 88, 95, 0)');
+		context.fillStyle = gradient;
+		context.beginPath();
+	
+		if (rect.x <= this.x) {
+			context.moveTo(rect.x, rect.y + rect.h);
+			context.lineTo(this.x, this.y + this.h);
+			context.lineTo(this.x + this.w, this.y);
+			context.lineTo(rect.x + rect.w, rect.y);
+		} else {
+			context.moveTo(rect.x, rect.y);
+			context.lineTo(this.x, this.y);
+			context.lineTo(this.x + this.w, this.y + this.h);
+			context.lineTo(rect.x + rect.w, rect.y + rect.h);
+		}
+		context.fill();
+	};
+}
+
 function MeaningfulMotion({ onClose }) {
 	const COLOR = COLORS.meaningfulMotion;
-	const rect = {
-		x: 60,
-		y: 60,
-		width: 200,
-		height: 200,
-	};
-	const light = {
-		x: 0,
-		y: 0,
-		width: 200,
-		height: 200,
-	};
+	const rect = new Rectangle(60, 60, 200, 200);
+	const light = new Light(0, 0, 200, 200);
 
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
@@ -31,49 +61,22 @@ function MeaningfulMotion({ onClose }) {
 	let isDragging = false;
 	let doesClickCloseButton = false;
 
-	const drawRect = () => {
-		const { x, y, width, height } = rect;
-		context.fillStyle = COLOR.rectangle;
-		context.fillRect(x, y, width, height);
-	};
-
-	const drawLight = () => {
-		const gradient = context.createLinearGradient(rect.x, 0, light.x + light.width, light.y + light.height);
-		gradient.addColorStop(0, 'rgba(229, 88, 95, 1)');
-		gradient.addColorStop(1, 'rgba(229, 88, 95, 0)');
-		context.fillStyle = gradient;
-		context.beginPath();
-	
-		if (rect.x <= light.x) {
-			context.moveTo(rect.x, rect.y + rect.height);
-			context.lineTo(light.x, light.y + light.height);
-			context.lineTo(light.x + light.width, light.y);
-			context.lineTo(rect.x + rect.width, rect.y);
-		} else {
-			context.moveTo(rect.x, rect.y);
-			context.lineTo(light.x, light.y);
-			context.lineTo(light.x + light.width, light.y + light.height);
-			context.lineTo(rect.x + rect.width, rect.y + rect.height);
-		}
-		context.fill();
-	};
-
 	this.resizeCanvas = () => {
 		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
 
-		light.x = Math.round(Math.abs(innerWidth - light.width) / 2);
+		light.x = Math.round(Math.abs(innerWidth - light.w) / 2);
 		light.y = innerHeight;
 
 		drawCanvas(context, COLOR.background);
-		drawLight();
-		drawRect();
+		light.draw(context, rect);
+		rect.draw(context);
 	};
 
 	const isInside = (mouseX, mouseY) => {
-		const { x, y, width, height } = rect;
-		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+		const { x, y, w, h } = rect;
+		return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
 	};
 
 	const onMouseDownHandler = (event) => {
@@ -108,11 +111,11 @@ function MeaningfulMotion({ onClose }) {
 		rect.y += movementY;
 	
 		drawCanvas(context, COLOR.background);
-		drawLight();
+		light.draw(context, rect);
 		/**
 		 * TODO: 사각형 크기 조절
 		 */
-		drawRect();
+		rect.draw(context);
 	};
 
 	const onMouseUpHandler = (event) => {
