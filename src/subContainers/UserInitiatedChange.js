@@ -8,9 +8,24 @@ import {
 	COLORS,
 } from '../utils/utils.js';
 
+function Circle(x, y, r) {
+	this.x = x;
+	this.y = y;
+	this.r = r;
+
+	this.draw = (context) => {
+		context.save();
+		context.beginPath();
+		context.fillStyle = COLORS.userInitiatedChange.circle;
+		context.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+		context.fill();
+		context.restore();
+	};
+}
+
 function UserInitiatedChange({ onClose }) {
 	const COLOR = COLORS.userInitiatedChange;
-	const circle = { x: 0, y: 0, r: 60 };
+	const circle = new Circle(0, 0, 60);
 
 	/** @type {HTMLCanvasElement} */
 	let canvas = null;
@@ -50,16 +65,6 @@ function UserInitiatedChange({ onClose }) {
 		}
 	};
 
-	const drawCircle = () => {
-		context.save();
-		const { x, y, r } = circle;
-		context.beginPath();
-		context.fillStyle = COLOR.circle;
-		context.arc(x, y, r, 0, Math.PI * 2, false);
-		context.fill();
-		context.restore();
-	};
-
 	const onMouseDownHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
@@ -84,7 +89,7 @@ function UserInitiatedChange({ onClose }) {
 
 		drawCanvas(context, COLOR.background);
 		drawLines();
-		drawCircle();
+		circle.draw(context);
 	};
 
 	const onMouseMoveHandler = (event) => {
@@ -102,7 +107,7 @@ function UserInitiatedChange({ onClose }) {
 
 		circle.x += movementX;
 		circle.y += movementY;
-		drawCircle();
+		circle.draw(context);
 	};
 
 	const onMouseUpHandler = (event) => {
@@ -123,13 +128,12 @@ function UserInitiatedChange({ onClose }) {
 	const animation = () => {
 		drawCanvas(context, COLOR.background);
 		drawLines();
-		drawCircle();
+		circle.draw(context);
 		window.requestAnimationFrame(animation);
 	};
 
 	const init = () => {
 		const { innerWidth, innerHeight } = window;
-
 		createCanvas();
 		canvas = document.querySelector('canvas');
 		canvas.width = innerWidth;
