@@ -1,4 +1,12 @@
-import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
+import {
+	$root,
+	createCanvas,
+	drawCanvas,
+	renderCloseButton,
+	addCloseButtonEventListener,
+	removeCloseButtonEventListener,
+	COLORS,
+} from '../utils/utils.js';
 
 function UserInitiatedChange({ onClose }) {
 	const COLOR = COLORS.userInitiatedChange;
@@ -8,6 +16,7 @@ function UserInitiatedChange({ onClose }) {
 	let canvas = null;
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
+	let $close = null;
 	let isDragging = false;
 	let doesClickCloseButton = false;
 
@@ -103,6 +112,7 @@ function UserInitiatedChange({ onClose }) {
 			$root.removeEventListener('mousedown', onMouseDownHandler);
 			$root.removeEventListener('mousemove', onMouseMoveHandler);
 			$root.removeEventListener('mouseup', onMouseUpHandler);
+			removeCloseButtonEventListener($close);
 			return;
 		}
 
@@ -128,6 +138,8 @@ function UserInitiatedChange({ onClose }) {
 		circle.x = innerWidth - 180 - circle.r;
 		circle.y = Math.round(innerHeight / 2);
 		renderCloseButton(COLOR.cancel);
+		$close = document.querySelector('#close');
+		addCloseButtonEventListener($close);
 
 		window.requestAnimationFrame(animation);
 	};

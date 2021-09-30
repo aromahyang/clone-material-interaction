@@ -57,6 +57,35 @@ export function renderCloseButton(color) {
 	`);
 }
 
+function handleMouseOverButton(event) {
+	const $close = event.path[1];
+	$close.classList.toggle('rotate');
+	$close.style.transform = 'scale(1.3, 1.3) rotate(360deg)';
+}
+
+function handleMouseOutButton(event) {
+	const $close = event.path[1];
+	$close.classList.toggle('rotate');
+	$close.style.transform = 'scale(1, 1) rotate(0deg)';
+}
+
+function handleTransitionEnd(event) {
+	const $close = event.target;
+	$close.classList.toggle('rotate');
+}
+
+export function addCloseButtonEventListener($element) {
+	$element.addEventListener('mouseover', handleMouseOverButton);
+	$element.addEventListener('mouseout', handleMouseOutButton);
+	$element.addEventListener('transitionend', handleTransitionEnd);
+}
+
+export function removeCloseButtonEventListener($element) {
+	$element.removeEventListener('mouseover', handleMouseOverButton);
+	$element.removeEventListener('mouseout', handleMouseOutButton);
+	$element.removeEventListener('transitionend', handleTransitionEnd);
+}
+
 export function createIndexBox({ $target, id, backgroundColor }) {
 	const $div = document.createElement('div');
 	$div.id = id;

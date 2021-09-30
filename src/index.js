@@ -15,6 +15,7 @@ import {
 import { $root, COLORS } from './utils/utils.js';
 
 function App() {
+	// this.index = 2;
 	this.index = 0;
 	this.indexContainer = {
 		tangibleSurfaces: null,
@@ -173,6 +174,7 @@ function App() {
 	};
 
 	this.render();
+	// renderSubcontainer();
 	window.addEventListener('resize', () => {
 		if (this.index > 0) {
 			this.subContainer.resizeCanvas();

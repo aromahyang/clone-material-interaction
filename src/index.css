@@ -195,3 +195,20 @@ body {
 	background-size: 56px 56px;
 	overflow: hidden;
 }
+
+#close.rotate {
+	transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+	/* animation-name: rotation;
+	animation-duration: .5s;
+	animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+	transform-origin: 50% 50%; */
+}
+
+@keyframes rotation {
+	0% {
+		transform: scale(1, 1) rotate(0deg);
+	}
+	100% {
+		transform: scale(1.3, 1.3) rotate(360deg);
+	}
+}

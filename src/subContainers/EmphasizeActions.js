@@ -1,4 +1,12 @@
-import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
+import {
+	$root,
+	createCanvas,
+	drawCanvas,
+	renderCloseButton,
+	addCloseButtonEventListener,
+	removeCloseButtonEventListener,
+	COLORS,
+} from '../utils/utils.js';
 
 function Ball(x, y, r, vx, vy, color) {
 	this.x = x;
@@ -48,6 +56,7 @@ function EmphasizeActions({ onClose }) {
 	let canvas = null;
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
+	let $close = null;
 
 	const reset = () => {
 		if (currentColor.background === COLOR.background) {
@@ -124,6 +133,7 @@ function EmphasizeActions({ onClose }) {
 		if (path.some((p) => p.id && p.id === 'close')) {
 			onClose();
 			$root.removeEventListener('click', onClickHandler);
+			removeCloseButtonEventListener($close);
 			return;
 		}
 	
@@ -152,6 +162,14 @@ function EmphasizeActions({ onClose }) {
 				break;
 			}
 		}
+	};
+
+	const onMouseoverHandler = () => {
+		//
+	};
+
+	const onMouseoutHandler = () => {
+		//
 	};
 
 	this.resizeCanvas = () => {
@@ -187,6 +205,8 @@ function EmphasizeActions({ onClose }) {
 		context = canvas.getContext('2d');
 		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
+		$close = document.querySelector('#close');
+		addCloseButtonEventListener($close);
 
 		window.requestAnimationFrame(animation);
 	};

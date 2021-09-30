@@ -1,4 +1,12 @@
-import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
+import {
+	$root,
+	createCanvas,
+	drawCanvas,
+	renderCloseButton,
+	addCloseButtonEventListener,
+	removeCloseButtonEventListener,
+	COLORS,
+} from '../utils/utils.js';
 
 function DimensionalAffordances({ onClose }) {
 	const MAX_RECT_WIDTH = 240;
@@ -20,6 +28,7 @@ function DimensionalAffordances({ onClose }) {
 	let canvas = null;
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
+	let $close = null;
 	let movingRect = {};
 	let isDragging = false;
 	let doesClickCloseButton = false;
@@ -142,6 +151,7 @@ function DimensionalAffordances({ onClose }) {
 			$root.removeEventListener('mousedown', onMouseDownHandler);
 			$root.removeEventListener('mousemove', onMouseMoveHandler);
 			$root.removeEventListener('mouseup', onMouseUpHandler);
+			removeCloseButtonEventListener($close);
 			return;
 		}
 
@@ -197,6 +207,8 @@ function DimensionalAffordances({ onClose }) {
 		context = canvas.getContext('2d');
 		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
+		$close = document.querySelector('#close');
+		addCloseButtonEventListener($close);
 
 		window.requestAnimationFrame(animation);
 	};

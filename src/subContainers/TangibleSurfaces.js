@@ -1,4 +1,12 @@
-import { $root, createCanvas, drawCanvas, renderCloseButton, COLORS } from '../utils/utils.js';
+import {
+	$root,
+	createCanvas,
+	drawCanvas,
+	renderCloseButton,
+	addCloseButtonEventListener,
+	removeCloseButtonEventListener,
+	COLORS,
+} from '../utils/utils.js';
 
 function TangibleSurfaces({ onClose }) {
 	const COLOR = COLORS.tangibleSurfaces;
@@ -20,6 +28,7 @@ function TangibleSurfaces({ onClose }) {
 	let canvas = null;
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
+	let $close = null;
 	let isDragging = false;
 	let isResizing = false;
 	let doesClickCloseButton = false;
@@ -176,13 +185,14 @@ function TangibleSurfaces({ onClose }) {
 		}
 	};
 
-	const onMouseUpHandler = () => {
+	const onMouseUpHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
 			onClose();
 			$root.removeEventListener('mousedown', onMouseDownHandler);
 			$root.removeEventListener('mousemove', onMouseMoveHandler);
 			$root.removeEventListener('mouseup', onMouseUpHandler);
+			removeCloseButtonEventListener($close);
 			return;
 		}
 
@@ -221,6 +231,8 @@ function TangibleSurfaces({ onClose }) {
 		setCirclePosition(true);
 		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
+		$close = document.querySelector('#close');
+		addCloseButtonEventListener($close);
 
 		window.requestAnimationFrame(animation);
 	};

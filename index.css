@@ -174,7 +174,7 @@ body {
 	cursor: pointer;
 }
 
-#close>span {
+#close > span {
 	display: block;
 	position: absolute;
 	width: 56px;
@@ -184,7 +184,7 @@ body {
 	z-index: 100;
 }
 
-#close>i {
+#close > i {
 	display: block;
 	position: absolute;
 	width: 56px;

@@ -10,8 +10,8 @@ Clone Material Interaction의 결과 [링크](https://aromahyang.github.io/clone
 ### TODO
 
 - [ ] Emphasize Actions
-- [ ] close 버튼 hover 애니메이션
 - [ ] sub-container 닫을 때 화면 전환 애니메이션
 - [ ] guide 화면
+- [ ] 크로스 브라우징 (Edge, IE, FireFox)
 - [x] 이벤트 등록 해제
-- [ ] 크로스 브라우징
+- [x] close 버튼 hover 애니메이션
