@@ -45,7 +45,7 @@ const initialColor = {
 function EmphasizeActions({ onClose }) {
 	const COLOR = COLORS.emphasizeActions;
 	let currentColor = { ...initialColor };
-	let circles = [
+	let balls = [
 		[new Ball(0, 0, 0, 0, 0, currentColor.circle)],
 		[],
 		[],
@@ -64,7 +64,7 @@ function EmphasizeActions({ onClose }) {
 		} else {
 			currentColor = { ...initialColor };
 		}
-		circles = [
+		balls = [
 			[new Ball(0, 0, 0, 0, 0, currentColor.circle)],
 			[],
 			[],
@@ -72,61 +72,50 @@ function EmphasizeActions({ onClose }) {
 			[]
 		];
 		const { innerWidth, innerHeight } = window;
-		circles[0][0].x = Math.round(innerWidth / 2);
-		circles[0][0].y = Math.round(innerHeight / 2);
-		circles[0][0].r = Math.round(1 * Math.min(innerHeight, innerWidth) / 3);
+		balls[0][0].x = Math.round(innerWidth / 2);
+		balls[0][0].y = Math.round(innerHeight / 2);
+		balls[0][0].r = Math.round(1 * Math.min(innerHeight, innerWidth) / 3);
 	};
 
-	const divideCircle = (index1, index2) => {
-		const target = circles[index1][index2];
-		const { x, y, r } = target;
-		const halfRadius = Math.round(r / 2);
-		const newCircle1 = new Ball(x, y, halfRadius, 3, 6, currentColor.circle);
-		const newCircle2 = new Ball(x, y, halfRadius, 6, 3, currentColor.circle);
+	const divideCircle = (target, mousePosition, index1) => {
+		const halfRadius = Math.round(target.r / 2);
+		const newCircle1 = new Ball(
+			mousePosition.x - halfRadius - 1,
+			mousePosition.y,
+			halfRadius,
+			6,
+			3,
+			currentColor.circle
+		);
+		const newCircle2 = new Ball(
+			mousePosition.x + halfRadius,
+			mousePosition.y,
+			halfRadius,
+			3,
+			6,
+			currentColor.circle
+		);
 
 		target.visible = false;
-		circles[index1 + 1].push(newCircle1);
-		circles[index1 + 1].push(newCircle2);
+		balls[index1 + 1].push(newCircle1);
+		balls[index1 + 1].push(newCircle2);
 	};
 
-	const checkBounceOff = (circle) => {
+	const checkWallBounce = (ball) => {
 		const { innerWidth, innerHeight } = window;
 
-		if (circle.x - circle.r <= 0 || circle.x + circle.r >= innerWidth) {
-			circle.vx *= -1;
+		if (ball.x - ball.r <= 0 || ball.x + ball.r >= innerWidth) {
+			ball.vx *= -1;
 		}
 
-		if (circle.y - circle.r <= 0 || circle.y + circle.r >= innerHeight) {
-			circle.vy *= -1;
+		if (ball.y - ball.r <= 0 || ball.y + ball.r >= innerHeight) {
+			ball.vy *= -1;
 		}
 		
-		return circle;
+		return ball;
 	};
 
-	const rotate = (x, y, sin, cos, reverse) => {
-		return {
-			x: reverse ? (x * cos + y * sin) : (x * cost - y * sin),
-			y: reverse ? (y * cos - x * sin) : (y * cos + x * sin),
-		};
-	};
-
-	const checkCollision = (circle1, circle2) => {
-		const dx = circle1.x - circle2.x;
-		const dy = circle1.y - circle2.y;
-		const dist = Math.sqrt(dx ** 2 + dy ** 2);
-
-		if (dist > circle1.r + circle2.r) {
-			return;
-		}
-
-		const angle = Math.atan2(dy, dx);
-		const sin = Math.sin(angle);
-		const cos = Math.cos(angle);
-		const pos1 = { x: 0, y: 0}; // rotate circle1's position
-		const pos2 = rotate(dx, dy, sin, cos, true);
-		const vel1 = rotate(circle1.vx, circle1.vy, sin, cos, true);
-		const vel2 = rotate(circle2.vx, circle2.vy, sin, cos, true);
-	};
+	const checkCollision = (ball1, ball2) => {};
 
 	const onClickHandler = (event) => {
 		const path = event.path ?? event.composedPath();
@@ -139,9 +128,9 @@ function EmphasizeActions({ onClose }) {
 	
 		const { offsetX, offsetY } = event;
 		let breakFlag = false;
-		for (let i = 0; i < circles.length; i++) {
-			for (let j = 0; j < circles[i].length; j++) {
-				const c = circles[i][j];
+		for (let i = 0; i < balls.length; i++) {
+			for (let j = 0; j < balls[i].length; j++) {
+				const c = balls[i][j];
 				if (!c.visible) {
 					continue;
 				}
@@ -152,7 +141,7 @@ function EmphasizeActions({ onClose }) {
 					if (i === 4) {
 						reset();
 					} else {
-						divideCircle(i, j);
+						divideCircle(balls[i][j], { x: offsetX, y: offsetY }, i);
 					}
 					break;
 				}
@@ -177,22 +166,48 @@ function EmphasizeActions({ onClose }) {
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
 		// TODO: resize할 때 원들의 크기 조절
-		circles[0][0].x = Math.round(innerWidth / 2);
-		circles[0][0].y = Math.round(innerHeight / 2);
-		circles[0][0].r = Math.round(1 * Math.min(innerHeight, innerWidth) / 3);
+		balls[0][0].x = Math.round(innerWidth / 2);
+		balls[0][0].y = Math.round(innerHeight / 2);
+		balls[0][0].r = Math.round(1 * Math.min(innerHeight, innerWidth) / 3);
 
 		drawCanvas(context, currentColor.background);
 	};
 
 	const animation = () => {
 		drawCanvas(context, currentColor.background);
-		circles.forEach((list) => {
-			list.forEach((circle) => {
-				if (circle.visible) {
-					circle.draw(context);
-					checkBounceOff(circle);
-					circle.x += circle.vx;
-					circle.y += circle.vy;
+		// move
+		balls.forEach((list) => {
+			list.forEach((ball) => {
+				if (ball.visible) {
+					ball.x += ball.vx;
+					ball.y += ball.vy;
+					checkWallBounce(ball);
+				}
+			});
+		});
+		// check collision
+		// balls.forEach((list, i) => {
+		// 	list.forEach((ball1, j) => {
+		// 		if (!ball1.visible) {
+		// 			return;
+		// 		}
+
+		// 		for (let k = 0, l = 0; k < balls.length && l < list.length; k++, l++) {
+		// 			if (k === i && j === l) {
+		// 				continue;
+		// 			}
+		// 			const ball2 = balls[k][l];
+		// 			if (ball2 && ball2.visible) {
+		// 				checkCollision(ball1, ball2);
+		// 			}
+		// 		}
+		// 	});
+		// });
+		// draw
+		balls.forEach((list) => {
+			list.forEach((ball) => {
+				if (ball.visible) {
+					ball.draw(context);
 				}
 			});
 		});
