@@ -35,7 +35,7 @@ function EmphasizeActionsCard({ $target }) {
 		$div.style.height = `${round(innerHeight / 2)}px`;
 		$div.style.transform = ratio <= 1 ? `translate(${round(innerWidth / 2)}px, 0)` : `translate(0, ${round(innerHeight / 2)}px)`;
 
-		render({ ratio, innerWidth, innerHeight, radius });
+		render({ innerWidth, innerHeight, radius });
 	};
 
 	const onTransitionEnd = (event) => {
