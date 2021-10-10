@@ -32,6 +32,8 @@ export const COLORS = {
 
 export const $root = document.querySelector('#root');
 
+/* related to SubContainers */
+
 export function createCanvas() {
 	const $subContainer = document.createElement('div');
 	$subContainer.className = 'sub-container';
@@ -51,20 +53,22 @@ export function drawCanvas(context, color) {
 export function renderCloseButton(color) {
 	$root.insertAdjacentHTML('beforeend', `
 	<div id="close">
-		<span style="background-color: ${color}; transform: matrix(1, 0, 0, 1, 0, 0);"></span>
-		<i style="transform: matrix(1, 0, 0, 1, 0, 0);"></i>
+		<span style="background-color: ${color};"></span>
+		<i></i>
 	</div>
 	`);
 }
 
 function handleMouseOverButton(event) {
-	const $close = event.path[1];
+	const path = event.path ?? event.composedPath();
+	const $close = path[1];
 	$close.classList.toggle('rotate');
 	$close.style.transform = 'scale(1.3, 1.3) rotate(360deg)';
 }
 
 function handleMouseOutButton(event) {
-	const $close = event.path[1];
+	const path = event.path ?? event.composedPath();
+	const $close = path[1];
 	$close.classList.toggle('rotate');
 	$close.style.transform = 'scale(1, 1) rotate(0deg)';
 }
@@ -85,6 +89,8 @@ export function removeCloseButtonEventListener($element) {
 	$element.removeEventListener('mouseout', handleMouseOutButton);
 	$element.removeEventListener('transitionend', handleTransitionEnd);
 }
+
+/* related to IndexContainer */
 
 export function createIndexBox({ $target, id, backgroundColor }) {
 	const $div = document.createElement('div');

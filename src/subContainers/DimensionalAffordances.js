@@ -144,7 +144,7 @@ function DimensionalAffordances({ onClose }) {
 		rectColors[2] = temp;
 	};
 
-	const onMouseUpHandler = () => {
+	const onMouseUpHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
 			onClose();

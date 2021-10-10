@@ -59,10 +59,10 @@ function TangibleSurfaces({ onClose }) {
 			const centerX = Math.round(innerWidth / 2);
 			const centerY = Math.round(innerHeight / 2);
 			const circlePositions = [
-				[centerX, ball.r],
-				[centerX, innerHeight - ball.r],
-				[ball.r, centerY],
-				[innerWidth - ball.r, centerY]
+				[centerX, ball.r * 2],
+				[centerX, innerHeight - ball.r * 2],
+				[ball.r * 2, centerY],
+				[innerWidth - ball.r * 2, centerY]
 			];
 			const index = Math.floor(Math.random() * 4);
 
@@ -80,11 +80,8 @@ function TangibleSurfaces({ onClose }) {
 			return;
 		}
 
-		const nextX = ball.x + ball.vx;
-		const nextY = ball.y + ball.vy;
-
-		const doesTouchVerticalWindow = nextX - ball.r <= 0 || nextX + ball.r >= innerWidth;
-		const doesTouchHorizontalWindow = nextY - ball.r <= 0 || nextY + ball.r >= innerHeight;
+		const doesTouchVerticalWindow = ball.x - ball.r <= 0 || ball.x + ball.r >= innerWidth;
+		const doesTouchHorizontalWindow = ball.y - ball.r <= 0 || ball.y + ball.r >= innerHeight;
 
 		if (doesTouchVerticalWindow) {
 			ball.vx *= -1;
@@ -94,16 +91,20 @@ function TangibleSurfaces({ onClose }) {
 			ball.vy *= -1;
 		}
 
-		const doesTouchRect = nextX + ball.r >= rect.x &&
-			nextX - ball.r <= rect.x + rect.w &&
-			nextY + ball.r >= rect.y &&
-			nextY - ball.r <= rect.y + rect.h;
+		const doesTouchRect = ball.x + ball.r >= rect.x &&
+			ball.x - ball.r <= rect.x + rect.w &&
+			ball.y + ball.r >= rect.y &&
+			ball.y - ball.r <= rect.y + rect.h;
+		const doesOverlapRect = ball.x + ball.r > rect.x &&
+			ball.x - ball.r < rect.x + rect.w &&
+			ball.y + ball.r > rect.y &&
+			ball.y - ball.r < rect.y + rect.h;
 
 		if (doesTouchRect) {
 			const x1 = Math.abs(rect.x - (ball.x + ball.r));
 			const x2 = Math.abs(rect.x + rect.w - (ball.x - ball.r));
-			const y1 = Math.abs(rect.y - (nextY + ball.r));
-			const y2 = Math.abs(rect.y + rect.h - (nextY - ball.r));
+			const y1 = Math.abs(rect.y - (ball.y + ball.r));
+			const y2 = Math.abs(rect.y + rect.h - (ball.y - ball.r));
 			const min1 = Math.min(x1, x2);
 			const min2 = Math.min(y1, y2);
 			const min = Math.min(min1, min2);
@@ -247,7 +248,7 @@ function TangibleSurfaces({ onClose }) {
 		$close = document.querySelector('#close');
 		addCloseButtonEventListener($close);
 
-		window.requestAnimationFrame(animation);
+		animation();
 	};
 
 	init();
