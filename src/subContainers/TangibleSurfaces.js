@@ -52,33 +52,8 @@ function TangibleSurfaces({ onClose }) {
 	let isResizing = false;
 	let doesClickCloseButton = false;
 
-	const setCirclePosition = (isInitial) => {
+	const setCirclePosition = () => {
 		const { innerHeight, innerWidth } = window;
-
-		if (isInitial) {
-			const centerX = Math.round(innerWidth / 2);
-			const centerY = Math.round(innerHeight / 2);
-			const circlePositions = [
-				[centerX, ball.r * 2],
-				[centerX, innerHeight - ball.r * 2],
-				[ball.r * 2, centerY],
-				[innerWidth - ball.r * 2, centerY]
-			];
-			const index = Math.floor(Math.random() * 4);
-
-			ball.x = circlePositions[index][0];
-			ball.y = circlePositions[index][1];
-
-			if (ball.x > innerWidth / 2) {
-				ball.vx *= -1;
-			}
-
-			if (ball.y > innerHeight / 2) {
-				ball.vy *= -1;
-			}
-
-			return;
-		}
 
 		const doesTouchVerticalWindow = ball.x - ball.r <= 0 || ball.x + ball.r >= innerWidth;
 		const doesTouchHorizontalWindow = ball.y - ball.r <= 0 || ball.y + ball.r >= innerHeight;
@@ -233,16 +208,34 @@ function TangibleSurfaces({ onClose }) {
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
 
-		const length = Math.round(Math.min(window.innerWidth, window.innerHeight) / 2);
+		const length = Math.round(Math.min(window.innerWidth, window.innerHeight) / 3);
 		rect.w = length;
 		rect.h = length;
-		const RADIUS = Math.round(length / 4) < 20
-						? 20
-						: Math.round(length / 4) > 48
-							? 48
-							: Math.round(length / 4);
-		ball.r = RADIUS;
-		setCirclePosition(true);
+
+		if (Math.round(length / 4) < 20) {
+			ball.r = 20;
+		} else if (Math.round(length / 4) > 48) {
+			ball.r = 48;
+		} else {
+			ball.r = Math.round(length / 4);
+		}
+		const centerX = Math.round(innerWidth / 2);
+		const centerY = Math.round(innerHeight / 2);
+		const circlePositions = [
+			[centerX, ball.r * 2],
+			[centerX, innerHeight - ball.r * 2],
+			[ball.r * 2, centerY],
+			[innerWidth - ball.r * 2, centerY]
+		];
+		const index = Math.floor(Math.random() * 4);
+		ball.x = circlePositions[index][0];
+		ball.y = circlePositions[index][1];
+		if (index === 1) {
+			ball.vy *= -1;
+		} else if (index === 3) {
+			ball.vx *= -1;
+		}
+
 		this.resizeCanvas();
 		renderCloseButton(COLOR.cancel);
 		$close = document.querySelector('#close');
