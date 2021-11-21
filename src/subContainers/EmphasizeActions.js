@@ -5,8 +5,10 @@ import {
 	renderCloseButton,
 	addCloseButtonEventListener,
 	removeCloseButtonEventListener,
-	COLORS,
+	requestAnimationFrame,
+	cancelAnimationFrame,
 } from '../utils/utils.js';
+import { COLORS } from '../utils/themes.js';
 
 function Ball(x, y, r, vx, vy, color) {
 	this.x = x;
@@ -57,6 +59,7 @@ function EmphasizeActions({ onClose }) {
 	/** @type {CanvasRenderingContext2D} */
 	let context = null;
 	let $close = null;
+	let requestId = null;
 
 	const reset = () => {
 		if (currentColor.background === COLOR.background) {
@@ -120,6 +123,7 @@ function EmphasizeActions({ onClose }) {
 	const onClickHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close')) {
+			cancelAnimationFrame(requestId);
 			onClose();
 			$root.removeEventListener('click', onClickHandler);
 			removeCloseButtonEventListener($close);
@@ -211,7 +215,7 @@ function EmphasizeActions({ onClose }) {
 				}
 			});
 		});
-		window.requestAnimationFrame(animation);
+		requestId = requestAnimationFrame(animation);
 	};
 
 	const init = () => {
@@ -222,8 +226,7 @@ function EmphasizeActions({ onClose }) {
 		renderCloseButton(COLOR.cancel);
 		$close = document.querySelector('#close');
 		addCloseButtonEventListener($close);
-
-		window.requestAnimationFrame(animation);
+		animation();
 	};
 
 	init();

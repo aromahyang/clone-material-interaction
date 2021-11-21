@@ -5,8 +5,8 @@ import {
 	renderCloseButton,
 	addCloseButtonEventListener,
 	removeCloseButtonEventListener,
-	COLORS,
 } from '../utils/utils.js';
+import { COLORS } from '../utils/themes.js';
 
 function Rectangle(x, y, w, h) {
 	this.x = x;

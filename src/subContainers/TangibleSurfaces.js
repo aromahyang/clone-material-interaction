@@ -5,8 +5,10 @@ import {
 	renderCloseButton,
 	addCloseButtonEventListener,
 	removeCloseButtonEventListener,
-	COLORS,
+	requestAnimationFrame,
+	cancelAnimationFrame,
 } from '../utils/utils.js';
+import { COLORS } from '../utils/themes.js';
 
 function Ball(x, y, r, vx, vy) {
 	this.x = x;
@@ -51,6 +53,7 @@ function TangibleSurfaces({ onClose }) {
 	let isDragging = false;
 	let isResizing = false;
 	let doesClickCloseButton = false;
+	let requestId = null;
 
 	const setCirclePosition = () => {
 		const { innerHeight, innerWidth } = window;
@@ -58,38 +61,56 @@ function TangibleSurfaces({ onClose }) {
 		const doesTouchVerticalWindow = ball.x - ball.r <= 0 || ball.x + ball.r >= innerWidth;
 		const doesTouchHorizontalWindow = ball.y - ball.r <= 0 || ball.y + ball.r >= innerHeight;
 
-		if (doesTouchVerticalWindow) {
+		const doesTouchLeftSide = ball.x + ball.r >= rect.x
+								&& ball.x + ball.r <= rect.x + rect.w
+								// && ball.x - ball.r >= rect.x - ball.r * 2
+								&& ball.y - ball.r >= rect.y
+								&& ball.y + ball.r <= rect.y + rect.h;
+		const doesTouchRightSide = ball.x - ball.r <= rect.x + rect.w
+								&& ball.x - ball.r >= rect.x
+								// && ball.x + ball.r <= rect.x + rect.w + ball.r * 2
+								&& ball.y - ball.r >= rect.y
+								&& ball.y + ball.r <= rect.y + rect.h;
+		const doesTouchTopSide = ball.y + ball.r >= rect.y
+								&& ball.y + ball.r <= rect.y + rect.h
+								// && ball.y - ball.r >= rect.y - ball.r * 2
+								&& ball.x - ball.r >= rect.x
+								&& ball.x + ball.r <= rect.x + rect.w;
+		const doesTouchBottomSide = ball.y - ball.r <= rect.y + rect.h
+								&& ball.y - ball.r >= rect.y
+								// && ball.y + ball.r <= rect.y + rect.h + ball.r * 2
+								&& ball.x - ball.r >= rect.x
+								&& ball.x + ball.r <= rect.x + rect.w;
+
+		if (doesTouchVerticalWindow || doesTouchLeftSide || doesTouchRightSide) {
+			console.log(`wall=${doesTouchVerticalWindow}, left=${doesTouchLeftSide}, right=${doesTouchRightSide}`)
 			ball.vx *= -1;
 		}
 
-		if (doesTouchHorizontalWindow) {
+		if (doesTouchHorizontalWindow || doesTouchTopSide || doesTouchBottomSide) {
+			console.log(`wall=${doesTouchHorizontalWindow}, top=${doesTouchTopSide}, bottom=${doesTouchBottomSide}`)
 			ball.vy *= -1;
 		}
 
-		const doesTouchRect = ball.x + ball.r >= rect.x &&
-			ball.x - ball.r <= rect.x + rect.w &&
-			ball.y + ball.r >= rect.y &&
-			ball.y - ball.r <= rect.y + rect.h;
-		const doesOverlapRect = ball.x + ball.r > rect.x &&
-			ball.x - ball.r < rect.x + rect.w &&
-			ball.y + ball.r > rect.y &&
-			ball.y - ball.r < rect.y + rect.h;
+		// const doesTouchRect = ball.x + ball.r >= rect.x &&
+		// 	ball.x - ball.r <= rect.x + rect.w &&
+		// 	ball.y + ball.r >= rect.y &&
+		// 	ball.y - ball.r <= rect.y + rect.h;
+		// if (doesTouchRect) {
+		// 	const x1 = Math.abs(rect.x - (ball.x + ball.r));
+		// 	const x2 = Math.abs(rect.x + rect.w - (ball.x - ball.r));
+		// 	const y1 = Math.abs(rect.y - (ball.y + ball.r));
+		// 	const y2 = Math.abs(rect.y + rect.h - (ball.y - ball.r));
+		// 	const min1 = Math.min(x1, x2);
+		// 	const min2 = Math.min(y1, y2);
+		// 	const min = Math.min(min1, min2);
 
-		if (doesTouchRect) {
-			const x1 = Math.abs(rect.x - (ball.x + ball.r));
-			const x2 = Math.abs(rect.x + rect.w - (ball.x - ball.r));
-			const y1 = Math.abs(rect.y - (ball.y + ball.r));
-			const y2 = Math.abs(rect.y + rect.h - (ball.y - ball.r));
-			const min1 = Math.min(x1, x2);
-			const min2 = Math.min(y1, y2);
-			const min = Math.min(min1, min2);
-
-			if (min === min1) {
-				ball.vx *= -1;
-			} else if (min === min2) {
-				ball.vy *= -1;
-			}
-		}
+		// 	if (min === min1) {
+		// 		ball.vx *= -1;
+		// 	} else if (min === min2) {
+		// 		ball.vy *= -1;
+		// 	}
+		// }
 
 		ball.x += ball.vx;
 		ball.y += ball.vy;
@@ -146,6 +167,11 @@ function TangibleSurfaces({ onClose }) {
 		rect.draw(context);
 	};
 
+	const moveBall = (movementX = 0, movementY = 0) => {
+		ball.x += movementX;
+		ball.y += movementY;
+	};
+
 	const onMouseMoveHandler = (event) => {
 		if (doesClickCloseButton) {
 			return;
@@ -161,12 +187,17 @@ function TangibleSurfaces({ onClose }) {
 
 		if (isDragging) {
 			moveRect(movementX, movementY);
+
+			if (ball.x + ball.r >= rect.x || ball.x - ball.r >= rect.x + rect.w) {
+				moveBall(movementX);
+			}
 		}
 	};
 
 	const onMouseUpHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			cancelAnimationFrame(requestId);
 			onClose();
 			$root.removeEventListener('mousedown', onMouseDownHandler);
 			$root.removeEventListener('mousemove', onMouseMoveHandler);
@@ -200,7 +231,7 @@ function TangibleSurfaces({ onClose }) {
 		rect.draw(context);
 		ball.draw(context);
 
-		window.requestAnimationFrame(animation);
+		requestId = requestAnimationFrame(animation);
 	};
 	
 	const init = () => {

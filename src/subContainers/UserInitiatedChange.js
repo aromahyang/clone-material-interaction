@@ -5,8 +5,10 @@ import {
 	renderCloseButton,
 	addCloseButtonEventListener,
 	removeCloseButtonEventListener,
-	COLORS,
+	requestAnimationFrame,
+	cancelAnimationFrame,
 } from '../utils/utils.js';
+import { COLORS } from '../utils/themes.js';
 
 function Circle(x, y, r) {
 	this.x = x;
@@ -34,6 +36,7 @@ function UserInitiatedChange({ onClose }) {
 	let $close = null;
 	let isDragging = false;
 	let doesClickCloseButton = false;
+	let requestId = null;
 
 	const isInsideCircle = (mouseX, mouseY) => {
 		const { x, y, r } = circle;
@@ -113,6 +116,7 @@ function UserInitiatedChange({ onClose }) {
 	const onMouseUpHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			cancelAnimationFrame(requestId);
 			onClose();
 			$root.removeEventListener('mousedown', onMouseDownHandler);
 			$root.removeEventListener('mousemove', onMouseMoveHandler);
@@ -129,7 +133,7 @@ function UserInitiatedChange({ onClose }) {
 		drawCanvas(context, COLOR.background);
 		drawLines();
 		circle.draw(context);
-		window.requestAnimationFrame(animation);
+		requestId = requestAnimationFrame(animation);
 	};
 
 	const init = () => {
@@ -144,8 +148,7 @@ function UserInitiatedChange({ onClose }) {
 		renderCloseButton(COLOR.cancel);
 		$close = document.querySelector('#close');
 		addCloseButtonEventListener($close);
-
-		window.requestAnimationFrame(animation);
+		animation();
 	};
 
 	init();

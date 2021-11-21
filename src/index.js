@@ -12,7 +12,8 @@ import {
 	UserInitiatedChange,
 	DimensionalAffordances,
 } from './subContainers/index.js';
-import { $root, COLORS } from './utils/utils.js';
+import { $root } from './utils/utils.js';
+import { COLORS } from './utils/themes.js';
 
 function App() {
 	this.index = 0;

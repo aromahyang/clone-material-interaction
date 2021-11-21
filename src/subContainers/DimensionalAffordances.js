@@ -5,8 +5,10 @@ import {
 	renderCloseButton,
 	addCloseButtonEventListener,
 	removeCloseButtonEventListener,
-	COLORS,
+	requestAnimationFrame,
+	cancelAnimationFrame,
 } from '../utils/utils.js';
+import { COLORS } from '../utils/themes.js';
 
 function DimensionalAffordances({ onClose }) {
 	const MAX_RECT_WIDTH = 240;
@@ -32,6 +34,7 @@ function DimensionalAffordances({ onClose }) {
 	let movingRect = {};
 	let isDragging = false;
 	let doesClickCloseButton = false;
+	let requestId = null;
 
 	const drawDiamond = ({ p1, p2, p3, p4, color, moving }) => {
 		context.fillStyle = color;
@@ -147,6 +150,7 @@ function DimensionalAffordances({ onClose }) {
 	const onMouseUpHandler = (event) => {
 		const path = event.path ?? event.composedPath();
 		if (path.some((p) => p.id && p.id === 'close') && doesClickCloseButton) {
+			cancelAnimationFrame(requestId);
 			onClose();
 			$root.removeEventListener('mousedown', onMouseDownHandler);
 			$root.removeEventListener('mousemove', onMouseMoveHandler);
@@ -198,7 +202,7 @@ function DimensionalAffordances({ onClose }) {
 			p4: [x2, y2],
 			color: rectColors[0],
 		});
-		window.requestAnimationFrame(animation);
+		requestId = requestAnimationFrame(animation);
 	};
 
 	const init = () => {
@@ -209,8 +213,7 @@ function DimensionalAffordances({ onClose }) {
 		renderCloseButton(COLOR.cancel);
 		$close = document.querySelector('#close');
 		addCloseButtonEventListener($close);
-
-		window.requestAnimationFrame(animation);
+		animation();
 	};
 
 	init();

@@ -1,4 +1,5 @@
-import { COLORS, createIndexBox, renderIndexLines, transformIndexLines } from '../utils/utils.js';
+import { createIndexBox, renderIndexLines, transformIndexLines } from '../utils/utils.js';
+import { COLORS } from '../utils/themes.js';
 
 function UserInitiatedChangeCard({ $target }) {
 	const COLOR = COLORS.userInitiatedChange;
